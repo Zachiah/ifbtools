@@ -1,0 +1,59 @@
+[debug] [2021-02-03T01:07:58.026Z] ----------------------------------------------------------------------
+[debug] [2021-02-03T01:07:58.033Z] Command:       /home/pi/.config/nvm/versions/node/v15.4.0/bin/node /home/pi/.config/nvm/versions/node/v15.4.0/bin/firebase emulators:start
+[debug] [2021-02-03T01:07:58.034Z] CLI Version:   9.3.0
+[debug] [2021-02-03T01:07:58.034Z] Platform:      linux
+[debug] [2021-02-03T01:07:58.035Z] Node Version:  v15.4.0
+[debug] [2021-02-03T01:07:58.036Z] Time:          Tue Feb 02 2021 18:07:58 GMT-0700 (Mountain Standard Time)
+[debug] [2021-02-03T01:07:58.037Z] ----------------------------------------------------------------------
+[debug] [2021-02-03T01:07:58.037Z] 
+[debug] [2021-02-03T01:07:58.054Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-02-03T01:07:58.055Z] > authorizing via signed-in user
+[info] i  emulators: Starting emulators: auth, functions, firestore, hosting {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, firestore, hosting"}}
+[debug] [2021-02-03T01:07:58.128Z] [hub] writing locator at /tmp/hub-ifbtools.json
+[warn] ⚠  functions: The following emulators are not running, calls to these services from the Functions emulator will affect production: database, pubsub {"metadata":{"emulator":{"name":"functions"},"message":"The following emulators are not running, calls to these services from the Functions emulator will affect production: \u001b[1mdatabase, pubsub\u001b[22m"}}
+[warn] ⚠  Your requested "node" version "12" doesn't match your global version "15" {"metadata":{"emulator":{"name":"functions"},"message":"Your requested \"node\" version \"12\" doesn't match your global version \"15\""}}
+[debug] [2021-02-03T01:07:58.249Z] defaultcredentials: writing to file /home/pi/.config/firebase/zachiahsawyer1_gmail_com_application_default_credentials.json
+[debug] [2021-02-03T01:07:58.257Z] Setting GAC to /home/pi/.config/firebase/zachiahsawyer1_gmail_com_application_default_credentials.json {"metadata":{"emulator":{"name":"functions"},"message":"Setting GAC to /home/pi/.config/firebase/zachiahsawyer1_gmail_com_application_default_credentials.json"}}
+[debug] [2021-02-03T01:07:58.269Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/ifbtools/adminSdkConfig [none]
+[debug] [2021-02-03T01:07:58.904Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/ifbtools/adminSdkConfig 200
+[debug] [2021-02-03T01:07:58.906Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/ifbtools/adminSdkConfig {"projectId":"ifbtools","storageBucket":"ifbtools.appspot.com","locationId":"us-central"}
+[debug] [2021-02-03T01:07:59.203Z] Ignoring unsupported arg: projectId {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: projectId"}}
+[debug] [2021-02-03T01:07:59.204Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"firestore"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2021-02-03T01:07:59.204Z] Starting Firestore Emulator with command {"binary":"java","args":["-Dgoogle.cloud_firestore.debug_log_level=FINE","-Duser.language=en","-jar","/home/pi/.cache/firebase/emulators/cloud-firestore-emulator-v1.11.12.jar","--host","localhost","--port",8080,"--rules","/home/pi/Desktop/ifbtools/firestore.rules","--functions_emulator","localhost:5001"],"optionalArgs":["port","webchannel_port","host","rules","functions_emulator","seed_from_export"],"joinArgs":false} {"metadata":{"emulator":{"name":"firestore"},"message":"Starting Firestore Emulator with command {\"binary\":\"java\",\"args\":[\"-Dgoogle.cloud_firestore.debug_log_level=FINE\",\"-Duser.language=en\",\"-jar\",\"/home/pi/.cache/firebase/emulators/cloud-firestore-emulator-v1.11.12.jar\",\"--host\",\"localhost\",\"--port\",8080,\"--rules\",\"/home/pi/Desktop/ifbtools/firestore.rules\",\"--functions_emulator\",\"localhost:5001\"],\"optionalArgs\":[\"port\",\"webchannel_port\",\"host\",\"rules\",\"functions_emulator\",\"seed_from_export\"],\"joinArgs\":false}"}}
+[info] i  firestore: Firestore Emulator logging to firestore-debug.log {"metadata":{"emulator":{"name":"firestore"},"message":"Firestore Emulator logging to \u001b[1mfirestore-debug.log\u001b[22m"}}
+[debug] [2021-02-03T01:08:05.750Z] API endpoint: http:// {"metadata":{"emulator":{"name":"firestore"},"message":"API endpoint: http://"}}
+[debug] [2021-02-03T01:08:05.751Z] localhost:8080
+If you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:
+
+   export FIRESTORE_EMULATOR_HOST=localhost:8080
+
+Dev App Server is now running.
+
+ {"metadata":{"emulator":{"name":"firestore"},"message":"localhost:8080\nIf you are using a library that supports the FIRESTORE_EMULATOR_HOST environment variable, run:\n\n   export FIRESTORE_EMULATOR_HOST=localhost:8080\n\nDev App Server is now running.\n\n"}}
+[debug] [2021-02-03T01:08:15.918Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/ifbtools/webApps/-/config [none]
+[debug] [2021-02-03T01:08:16.605Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/ifbtools/webApps/-/config 200
+[debug] [2021-02-03T01:08:16.606Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/ifbtools/webApps/-/config {"projectId":"ifbtools","appId":"1:85331227879:web:4c952bb9bff8ce2de09e42","storageBucket":"ifbtools.appspot.com","locationId":"us-central","apiKey":"AIzaSyBVBVXHMsD8m7ao6lpJuS8HWZvfA7c3MEM","authDomain":"ifbtools.firebaseapp.com","messagingSenderId":"85331227879","measurementId":"G-P5PM5PCDSP"}
+[info] i  hosting: Serving hosting files from: out {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: \u001b[1mout\u001b[22m"}}
+[info] ✔  hosting: Local server: http://localhost:5000 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: \u001b[4m\u001b[1mhttp://localhost:5000\u001b[22m\u001b[24m"}}
+[info] i  ui: downloading ui-v1.4.1.zip... {"metadata":{"emulator":{"name":"ui"},"message":"downloading ui-v1.4.1.zip..."}}
+[debug] [2021-02-03T01:08:16.761Z] >>> [apiv2][query] GET https://storage.googleapis.com/firebase-preview-drop/emulator/ui-v1.4.1.zip [none]
+[debug] [2021-02-03T01:08:17.554Z] <<< [apiv2][status] GET https://storage.googleapis.com/firebase-preview-drop/emulator/ui-v1.4.1.zip 200
+[debug] [2021-02-03T01:08:17.555Z] <<< [apiv2][body] GET https://storage.googleapis.com/firebase-preview-drop/emulator/ui-v1.4.1.zip [stream]
+[debug] [2021-02-03T01:08:28.260Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2021-02-03T01:08:28.261Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"ui"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2021-02-03T01:08:28.261Z] Starting Emulator UI with command {"binary":"node","args":["/home/pi/.cache/firebase/emulators/ui-v1.4.1/server.bundle.js"],"optionalArgs":[],"joinArgs":false} {"metadata":{"emulator":{"name":"ui"},"message":"Starting Emulator UI with command {\"binary\":\"node\",\"args\":[\"/home/pi/.cache/firebase/emulators/ui-v1.4.1/server.bundle.js\"],\"optionalArgs\":[],\"joinArgs\":false}"}}
+[info] i  ui: Emulator UI logging to ui-debug.log {"metadata":{"emulator":{"name":"ui"},"message":"Emulator UI logging to \u001b[1mui-debug.log\u001b[22m"}}
+[debug] [2021-02-03T01:08:28.762Z] Web / API server started at http://localhost:1111
+ {"metadata":{"emulator":{"name":"ui"},"message":"Web / API server started at http://localhost:1111\n"}}
+[info] i  functions: Watching "/home/pi/Desktop/ifbtools/functions" for Cloud Functions... {"metadata":{"emulator":{"name":"functions"},"message":"Watching \"/home/pi/Desktop/ifbtools/functions\" for Cloud Functions..."}}
+[debug] [2021-02-03T01:08:28.845Z] [worker-pool] addWorker(~diagnostic~) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] addWorker(~diagnostic~)"}}
+[debug] [2021-02-03T01:08:28.847Z] [worker-pool] Adding worker with key ~diagnostic~, total=1 {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] Adding worker with key ~diagnostic~, total=1"}}
+[debug] [2021-02-03T01:08:28.847Z] [worker-pool] submitWork(triggerId=) {"metadata":{"emulator":{"name":"functions"},"message":"[worker-pool] submitWork(triggerId=)"}}
+[debug] [2021-02-03T01:08:28.849Z] [worker-~diagnostic~-54379d96-dc38-4ee5-a626-7642b69ddb65]: Assigning socketPath: /tmp/fire_emu_28319.sock {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-54379d96-dc38-4ee5-a626-7642b69ddb65]: Assigning socketPath: /tmp/fire_emu_28319.sock"}}
+[debug] [2021-02-03T01:08:28.851Z] [worker-~diagnostic~-54379d96-dc38-4ee5-a626-7642b69ddb65]: BUSY {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-54379d96-dc38-4ee5-a626-7642b69ddb65]: BUSY"}}
+[debug] [2021-02-03T01:08:29.488Z] [runtime-status] [28319] Functions runtime initialized. {"cwd":"/home/pi/Desktop/ifbtools/functions","node_version":"15.4.0"} {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [28319] Functions runtime initialized. {\"cwd\":\"/home/pi/Desktop/ifbtools/functions\",\"node_version\":\"15.4.0\"}"}}
+[debug] [2021-02-03T01:08:29.494Z] [runtime-status] [28319] Disabled runtime features: undefined {"metadata":{"emulator":{"name":"functions"},"message":"[runtime-status] [28319] Disabled runtime features: undefined"}}
+[warn] ⚠  The Cloud Functions emulator requires the module "firebase-admin" to be installed. This package is in your package.json, but it's not available. You probably need to run "npm install" in your functions directory. {"metadata":{"emulator":{"name":"functions"},"message":"The Cloud Functions emulator requires the module \"firebase-admin\" to be installed. This package is in your package.json, but it's not available. You probably need to run \"npm install\" in your functions directory."}}
+[info] i  functions: Your functions could not be parsed due to an issue with your node_modules (see above) {"metadata":{"emulator":{"name":"functions"},"message":"Your functions could not be parsed due to an issue with your node_modules (see above)"}}
+[debug] [2021-02-03T01:08:29.520Z] [worker-~diagnostic~-54379d96-dc38-4ee5-a626-7642b69ddb65]: exited {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-54379d96-dc38-4ee5-a626-7642b69ddb65]: exited"}}
+[debug] [2021-02-03T01:08:29.522Z] [worker-~diagnostic~-54379d96-dc38-4ee5-a626-7642b69ddb65]: FINISHED {"metadata":{"emulator":{"name":"functions"},"message":"[worker-~diagnostic~-54379d96-dc38-4ee5-a626-7642b69ddb65]: FINISHED"}}
