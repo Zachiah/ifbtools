@@ -1,49 +1,50 @@
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import Index from "./Index";
 import BibleLayout from "./bible/Layout";
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-} from "react-router-dom";
+import Hidden from "@material-ui/core/Hidden";
+import TopBar from "../components/TopBar";
+import { Switch, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import BottomBar from "../components/BottomBar";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import lastPages from "util/LastPages";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        menuButton: {
-            marginRight: theme.spacing(2),
-        },
-        title: {
+        main: {
+            marginTop: theme.spacing(8),
+            marginBottom: theme.spacing(8),
+            [theme.breakpoints.up("md")]: {
+                marginBottom: theme.spacing(0)
+            },
             flexGrow: 1,
+            overflow: "auto"
         },
-        mainPaper: {
-            margin: theme.spacing(2)
+        wrapper: {
+            height: "100vh",
+            display: "flex",
+            flexDirection: "column"
         }
     }),
 );
 
 export default function Layout() {
-    const classes = useStyles();
-    return (
-        <>
-            <AppBar position="static">
-                <Toolbar variant="dense">
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" component="h1" color="inherit">
-                        IFB Tools
-                    </Typography>
-                </Toolbar>
-            </AppBar>
+    const styles = useStyles();
+    const location = useLocation();
 
-            <Paper className={classes.mainPaper} elevation={0}>
+    useEffect(() => {
+        if (location.pathname.startsWith('/bible')) {
+            lastPages.bible = location.pathname;
+        }
+    })
+
+
+
+    return (
+        <div className={styles.wrapper}>
+            <TopBar title="IFB Tools" items={[{ url: "/bible", display: "Bible" }]} />
+
+
+            <main className={styles.main}>
                 <Switch>
                     <Route path="/bible">
                         <BibleLayout />
@@ -52,10 +53,12 @@ export default function Layout() {
                     <Route exact path="/">
                         <Index />
                     </Route>
-
-
                 </Switch>
-            </Paper>
-        </>
+            </main>
+
+            <Hidden mdUp>
+                <BottomBar />
+            </Hidden>
+        </div>
     )
 }

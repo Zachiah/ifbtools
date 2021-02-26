@@ -1,7 +1,11 @@
-import Typography from "@material-ui/core/Typography"
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
+
 
 export default function Home() {
     return (
-        <Typography variant="h1">Home</Typography>
+        <Container maxWidth="sm">
+            <Typography variant="h1">Home</Typography>
+        </Container>
     )
 }
