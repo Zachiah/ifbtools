@@ -1,10 +1,10 @@
 import bible from "../bible.json";
 
-type GConstructor<T = {}> = new (...args: any[]) => T;
+export type GConstructor<T = {}> = new (...args: any[]) => T;
 
 // BookNameFormattable
-type BookNameFormatableType = GConstructor<{ _book: string }>;
-type BookNameFormatable = { formattedBook: string };
+export type BookNameFormatableType = GConstructor<{ _book: string }>;
+export type BookNameFormatable = { formattedBook: string };
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
 function BookNameFormatable<TBase extends BookNameFormatableType>(Base: TBase) {
     return class BookNameFormatable extends Base {
@@ -22,8 +22,8 @@ function BookNameFormatable<TBase extends BookNameFormatableType>(Base: TBase) {
 }
 
 // Searchable
-type SearchableContract = GConstructor<{ allVerses(): Generator<BibleVerse> }>;
-type Searchable = { search(query: string, options: {}): Iterator<BibleVerse> };
+export type SearchableContract = GConstructor<{ allVerses(): Generator<BibleVerse> }>;
+export type Searchable = { search(query: string, options: {}): Iterator<BibleVerse> };
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
 function Searchable<TBase extends SearchableContract>(Base: TBase) {
     return class Searchable extends Base {
@@ -81,7 +81,7 @@ class BibleVerseBase {
 
 let BibleVerse = BookNameFormatable(BibleVerseBase);
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
-type BibleVerse = BookNameFormatable & BibleVerseBase;
+export type BibleVerse = BookNameFormatable & BibleVerseBase;
 
 class BibleChapterBase {
     _book: BibleBooks;
@@ -161,7 +161,7 @@ class BibleChapterBase {
 }
 let BibleChapter = Searchable(BookNameFormatable(BibleChapterBase));
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
-type BibleChapter = BibleChapterBase & BookNameFormatable & Searchable;
+export type BibleChapter = BibleChapterBase & BookNameFormatable & Searchable;
 
 
 
@@ -193,7 +193,7 @@ class BibleBookBase {
 
 let BibleBook = Searchable(BookNameFormatable(BibleBookBase));
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
-type BibleBook = BibleBookBase & BookNameFormatable & Searchable;
+export type BibleBook = BibleBookBase & BookNameFormatable & Searchable;
 
 class BibleBase {
     books: { [k: string]: BibleBook; };
@@ -235,7 +235,7 @@ class BibleBase {
 }
 let Bible = Searchable(BibleBase);
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
-type Bible = BibleBase & Searchable;
+export type Bible = BibleBase & Searchable;
 
 const theBible = new Bible();
 export default theBible;

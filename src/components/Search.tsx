@@ -1,6 +1,12 @@
-import SearchIcon from "@material-ui/icons/Search";
+import { Theme, createStyles, fade, makeStyles } from '@material-ui/core/styles';
+
+import Dialog from "@material-ui/core/Dialog";
 import InputBase from "@material-ui/core/InputBase";
-import { createStyles, fade, makeStyles, Theme } from '@material-ui/core/styles';
+import Paper from "@material-ui/core/Paper";
+import SearchIcon from "@material-ui/icons/Search";
+import {
+    useState
+} from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -41,25 +47,62 @@ const useStyles = makeStyles((theme: Theme) =>
                     width: '20ch',
                 },
             },
-        }
+        },
     }),
 );
 
-export default function Search() {
+export default function Search({ Results }: { Results: ({ query }: { query: string }) => JSX.Element }) {
     const classes = useStyles();
+    const [query, setQuery] = useState("");
+    const [open, setOpen] = useState(false);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setQuery(e.target.value);
+    }
+
+    const handleBlur = () => setOpen(false);
+    const handleFocus = () => {
+        setOpen(true)
+    }
+
     return (
-        <div className={classes.search}>
-            <div className={classes.searchIcon}>
-                <SearchIcon />
+        <div>
+            <div className={classes.search}>
+                <div className={classes.searchIcon}>
+                    <SearchIcon />
+                </div>
+                <InputBase
+                    placeholder="Search…"
+                    classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                    }}
+                    inputProps={{ 'aria-label': 'search' }}
+                    onChange={handleChange}
+                    value={query}
+                    onFocus={handleFocus}
+                />
             </div>
-            <InputBase
-                placeholder="Search…"
-                classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                }}
-                inputProps={{ 'aria-label': 'search' }}
-            />
+
+            <Dialog open={open}>
+                <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                        <SearchIcon />
+                    </div>
+                    <InputBase
+                        placeholder="Search…"
+                        classes={{
+                            root: classes.inputRoot,
+                            input: classes.inputInput,
+                        }}
+                        inputProps={{ 'aria-label': 'search' }}
+                        onChange={handleChange}
+                        value={query}
+                        onFocus={handleFocus}
+                    />
+                </div>
+                <Results query={query} />
+            </Dialog>
         </div>
     )
 }
