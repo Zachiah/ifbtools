@@ -42,12 +42,16 @@ const useStyles = makeStyles((theme: Theme) =>
             transition: theme.transitions.create('width'),
             width: '100%',
             [theme.breakpoints.up('sm')]: {
-                width: '12ch',
-                '&:focus': {
-                    width: '20ch',
-                },
+                width: '20ch',
             },
+            backgroundColor: "inherit",
+            border: "0px solid black",
+            color: 'inherit',
+            fontSize: "1em"
         },
+        dialog: {
+            height: "100%"
+        }
     }),
 );
 
@@ -60,9 +64,12 @@ export default function Search({ Results }: { Results: ({ query }: { query: stri
         setQuery(e.target.value);
     }
 
-    const handleBlur = () => setOpen(false);
-    const handleFocus = () => {
-        setOpen(true)
+    const closeDialog = () => {
+        console.log("closing Dialog");
+        setOpen(false);
+    }
+    const openDialog = () => {
+        setOpen(true);
     }
 
     return (
@@ -71,20 +78,12 @@ export default function Search({ Results }: { Results: ({ query }: { query: stri
                 <div className={classes.searchIcon}>
                     <SearchIcon />
                 </div>
-                <InputBase
-                    placeholder="Search…"
-                    classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                    }}
-                    inputProps={{ 'aria-label': 'search' }}
-                    onChange={handleChange}
-                    value={query}
-                    onFocus={handleFocus}
-                />
+                <div className={classes.inputRoot}>
+                    <button className={classes.inputInput} onClick={openDialog}>Search...</button>
+                </div>
             </div>
 
-            <Dialog open={open}>
+            <Dialog open={open} onClose={closeDialog} className={classes.dialog} fullWidth>
                 <div className={classes.search}>
                     <div className={classes.searchIcon}>
                         <SearchIcon />
@@ -98,7 +97,6 @@ export default function Search({ Results }: { Results: ({ query }: { query: stri
                         inputProps={{ 'aria-label': 'search' }}
                         onChange={handleChange}
                         value={query}
-                        onFocus={handleFocus}
                     />
                 </div>
                 <Results query={query} />
