@@ -3,7 +3,7 @@ import bible from "../bible.json";
 export type GConstructor<T = {}> = new (...args: any[]) => T;
 
 // BookNameFormattable
-export type BookNameFormatableType = GConstructor<{ _book: string }>;
+export type BookNameFormatableType = GConstructor<{ _book: BibleBooks }>;
 export type BookNameFormatable = { formattedBook: string };
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
 function BookNameFormatable<TBase extends BookNameFormatableType>(Base: TBase) {
@@ -17,6 +17,77 @@ function BookNameFormatable<TBase extends BookNameFormatableType>(Base: TBase) {
                 return `${this._book[0]} ${this._book[1].toUpperCase()}${this._book.substring(2)}`;
             }
             return `${this._book[0].toUpperCase()}${this._book.substring(1)}`;
+        }
+
+        get bookShortName() {
+            return ({
+                "genesis": "gen",
+                "exodus": "ex",
+                "leviticus": "lev",
+                "numbers": "num",
+                "deuteronomy": "deut",
+                "joshua": "josh",
+                "judges": "judg",
+                "ruth": "ruth",
+                "1samuel": "1 sam",
+                "2samuel": "2 sam",
+                "1kings": "1 kgs",
+                "2kings": "2 kgs",
+                "1chronicles": "1 chr",
+                "2chronicles": "2 chr",
+                "ezra": "ezra",
+                "nehemiah": "neh",
+                "esther": "esth",
+                "job": "job",
+                "psalms": "pslm",
+                "proverbs": "prov",
+                "ecclesiastes": "eccl",
+                "songofsolomon": "song",
+                "isaiah": "isa",
+                "jeremiah": "jer",
+                "lamentations": "lam",
+                "ezekiel": "ezek",
+                "daniel": "dan",
+                "hosea": "hos",
+                "joel": "joel",
+                "amos": "amos",
+                "obadiah": "oba",
+                "jonah": "jon",
+                "micah": "mic",
+                "nahum": "nah",
+                "habakkuk": "hab",
+                "zephaniah": "zeph",
+                "haggai": "hag",
+                "zechariah": "zech",
+                "malachi": "mal",
+                "matthew": "matt",
+                "mark": "mark",
+                "luke": "luke",
+                "john": "john",
+                "acts": "acts",
+                "romans": "rom",
+                "1corinthians": "1 cor",
+                "2corinthians": "2 cor",
+                "galatians": "gal",
+                "ephesians": "eph",
+                "philippians": "phil",
+                "colossians": "col",
+                "1thessalonians": "1 ths",
+                "2thessalonians": "2 ths",
+                "1timothy": "1 tim",
+                "2timothy": "2 tim",
+                "titus": "titus",
+                "philemon": "phm",
+                "hebrews": "heb",
+                "james": "jas",
+                "1peter": "1 pet",
+                "2peter": "2 pet",
+                "1john": "1 jn",
+                "2john": "2 jn",
+                "3john": "3 jn",
+                "jude": "jude",
+                "revelation": "rev",
+            })[this._book].toUpperCase();
         }
     };
 }
