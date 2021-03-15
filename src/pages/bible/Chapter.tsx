@@ -52,6 +52,9 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "inline-block",
             paddingTop: theme.spacing(2),
             paddingBottom: theme.spacing(2)
+        },
+        titleWrapper: {
+            paddingBottom: theme.spacing(2)
         }
 
     }),
@@ -116,13 +119,15 @@ export default function Chapter() {
 
                 <Grid item md={9} xs={12} className={classes.mainContent}>
                     <Container maxWidth="sm">
-                        <Hidden smDown>
-                            <Paper variant="outlined" className={classes.verse} square>
-                                {prevButton}
-                                <Typography variant="h5" component="h2" className={classes.chapterTitle}>{chapter.formattedBook} {chapter._chapter}</Typography>
-                                {nextButton}
-                            </Paper>
-                        </Hidden>
+                        <div className={classes.titleWrapper}>
+                            <Hidden smDown>
+                                <Paper variant="outlined" className={classes.verse} square>
+                                    {prevButton}
+                                    <Typography variant="h5" component="h2" className={classes.chapterTitle}>{chapter.formattedBook} {chapter._chapter}</Typography>
+                                    {nextButton}
+                                </Paper>
+                            </Hidden>
+                        </div>
                         {chapter.verses.map(verse => (
                             <Verse verse={verse} />
                         ))}

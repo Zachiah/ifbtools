@@ -12,6 +12,14 @@ const useStyles = makeStyles((theme: Theme) =>
         chip: {
             float: "left",
             marginRight: theme.spacing(1)
+        },
+        button: {
+            border: "0px solid black",
+            padding: "0px",
+            margin: "0px",
+            display: "block",
+            fontSize: "inherit",
+            width: "100%"
         }
     }),
 );
@@ -19,11 +27,13 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Verse({ verse }: { verse: BibleVerse }) {
     const classes = useStyles();
     return (
-        <Paper variant="outlined" className={classes.verse} square key={verse._verse}>
-            <Chip label={verse._verse} size="small" className={classes.chip} />
-            <div>
-                {verse.text}
-            </div>
-        </Paper>
+        <button className={classes.button}>
+            <Paper variant="outlined" className={classes.verse} square key={verse._verse}>
+                <Chip label={verse._verse} size="small" className={classes.chip} />
+                <div>
+                    {verse.text}
+                </div>
+            </Paper>
+        </button>
     )
 }
