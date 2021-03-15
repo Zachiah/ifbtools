@@ -1,6 +1,7 @@
 import { Theme, createStyles, fade, makeStyles } from '@material-ui/core/styles';
 
 import Dialog from "@material-ui/core/Dialog";
+import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
 import Paper from "@material-ui/core/Paper";
 import SearchIcon from "@material-ui/icons/Search";
@@ -74,14 +75,9 @@ export default function Search({ Results }: { Results: ({ query }: { query: stri
 
     return (
         <div>
-            <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                    <SearchIcon />
-                </div>
-                <div className={classes.inputRoot}>
-                    <button className={classes.inputInput} onClick={openDialog}>Search...</button>
-                </div>
-            </div>
+            <IconButton onClick={openDialog} color="inherit">
+                <SearchIcon />
+            </IconButton>
 
             <Dialog open={open} onClose={closeDialog} className={classes.dialog} fullWidth>
                 <div className={classes.search}>
