@@ -4,7 +4,7 @@ export type GConstructor<T = {}> = new (...args: any[]) => T;
 
 // BookNameFormattable
 export type BookNameFormatableType = GConstructor<{ _book: BibleBooks }>;
-export type BookNameFormatable = { formattedBook: string };
+export type BookNameFormatable = { formattedBook: string, bookShortName: string };
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
 function BookNameFormatable<TBase extends BookNameFormatableType>(Base: TBase) {
     return class BookNameFormatable extends Base {

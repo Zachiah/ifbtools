@@ -91,7 +91,12 @@ export default function Chapter() {
                         {prevButton}
                         <Button color="inherit" className={classes.chapterTitle} onClick={openDialog}>
                             <Typography variant="h6" component="h1" color="inherit" noWrap>
-                                {chapter.formattedBook} {chapter._chapter}
+                                <Hidden smUp>
+                                    {chapter.bookShortName} {chapter._chapter}
+                                </Hidden>
+                                <Hidden xsDown>
+                                    {chapter.formattedBook} {chapter._chapter}
+                                </Hidden>
                             </Typography>
                         </Button>
                         {nextButton}
