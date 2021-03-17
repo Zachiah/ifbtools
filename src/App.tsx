@@ -1,7 +1,7 @@
-import React from 'react';
 import './App.css';
-import Layout from './pages/Layout';
 
+import Layout from './pages/Layout';
+import React from 'react';
 import {
   BrowserRouter as Router,
 } from "react-router-dom";

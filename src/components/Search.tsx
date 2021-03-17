@@ -3,7 +3,6 @@ import { Theme, createStyles, fade, makeStyles } from '@material-ui/core/styles'
 import Dialog from "@material-ui/core/Dialog";
 import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@material-ui/core/InputBase";
-import Paper from "@material-ui/core/Paper";
 import SearchIcon from "@material-ui/icons/Search";
 import {
     useState
@@ -56,7 +55,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default function Search({ Results }: { Results: ({ query }: { query: string }) => JSX.Element }) {
+export default function Search({ Results, className }:
+    {
+        Results: ({ query }: { query: string, },) => JSX.Element,
+        className?: string
+    }) {
     const classes = useStyles();
     const [query, setQuery] = useState("");
     const [open, setOpen] = useState(false);
@@ -74,8 +77,8 @@ export default function Search({ Results }: { Results: ({ query }: { query: stri
     }
 
     return (
-        <div>
-            <IconButton onClick={openDialog} color="inherit">
+        <>
+            <IconButton onClick={openDialog} color="inherit" className={className}>
                 <SearchIcon />
             </IconButton>
 
@@ -97,6 +100,6 @@ export default function Search({ Results }: { Results: ({ query }: { query: stri
                 </div>
                 <Results query={query} />
             </Dialog>
-        </div>
+        </>
     )
 }

@@ -1,24 +1,19 @@
+import React, { useState } from 'react';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import bible, { BibleVerse } from "util/Bible";
 
-import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
+import AdjacentChapterButton from "components/AdjacentChapterButton";
+import ChapterTopBar from "components/ChapterTopBar";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
-import IconButton from "@material-ui/core/IconButton"
-import { Link } from "react-router-dom";
-import NavigateBefore from "@material-ui/icons/NavigateBefore";
-import NavigateNext from "@material-ui/icons/NavigateNext";
+import HighlightVersesBar from 'components/HighlightVersesBar';
 import Paper from "@material-ui/core/Paper";
-import Search from "components/Search";
-import SelectChapterDialog from "components/SelectChapterDialog"
 import SelectChapterSidebar from "components/SelectChapterSidebar";
-import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography"
 import Verse from "components/Verse";
-import bible from "util/Bible";
+import { useHighlights } from 'state/useHighlights';
 import { useParams } from "react-router-dom";
-import { useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,78 +31,49 @@ const useStyles = makeStyles((theme: Theme) =>
             height: "100%",
             overflow: "auto"
         },
-        title: {
-            marginRight: theme.spacing(2)
-        },
-        navNext: {
-            marginRight: "auto",
-            display: "inline-block",
-            marginBottom: theme.spacing(1)
-        },
-        navPrev: {
-            display: "inline-block",
-            marginBottom: theme.spacing(1)
-        },
-        chapterTitle: {
-            display: "inline-block",
-            paddingTop: theme.spacing(2),
-            paddingBottom: theme.spacing(2)
-        },
         titleWrapper: {
             paddingBottom: theme.spacing(2)
+        },
+        chapterTitle: {
+            display: "inline-block"
         }
 
     }),
 );
-function Results({ query }: { query: string }) {
-    return (
-        <>{query}</>
-    )
-}
 
 export default function Chapter() {
     const classes = useStyles();
     const { book, chapter: chapterNumber } = useParams<{ book: string, chapter: string }>();
     const chapter = bible.books[book].getChapter(+chapterNumber);
 
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const closeDialog = () => setDialogOpen(false);
-    const openDialog = () => setDialogOpen(true);
+    const {
+        highlightWholeVerse
+    } = useHighlights(chapter.verses);
+
+    function highlightSelectedVerses(color: string) {
+        selectedVersesArray.map(verse => highlightWholeVerse(verse, color));
+        closeSelectedVersesMenu();
+    }
+
+    const getEmptySelectedVerses = () => Object.fromEntries(chapter.verses.map(verse => [verse._verse, false]));
+
+    const [selectedVerses, setSelectedVerses] = useState(getEmptySelectedVerses);
 
 
-    const prevButton = (
-        <IconButton color="inherit" component={Link} to={chapter.prev.link} className={classes.navPrev}>
-            <NavigateBefore />
-        </IconButton>
-    );
+    const toggleVerse = (verse: BibleVerse) => {
+        setSelectedVerses({ ...selectedVerses, [verse._verse]: !selectedVerses[verse._verse] })
+    }
 
-    const nextButton = (
-        <IconButton className={classes.navNext} color="inherit" component={Link} to={chapter.next.link}>
-            <NavigateNext />
-        </IconButton>
-    )
+    const closeSelectedVersesMenu = () => {
+        setSelectedVerses(getEmptySelectedVerses());
+    }
+
+    const selectedVersesArray = Object.entries(selectedVerses).filter(item => item[1]).map(item => chapter.getVerse(+item[0]));
+
     return (
         <>
             <Hidden mdUp>
-                <AppBar position="fixed">
-                    <Toolbar variant="dense">
-                        {prevButton}
-                        <Button color="inherit" className={classes.chapterTitle} onClick={openDialog}>
-                            <Typography variant="h6" component="h1" color="inherit" noWrap>
-                                <Hidden smUp>
-                                    {chapter.bookShortName} {chapter._chapter}
-                                </Hidden>
-                                <Hidden xsDown>
-                                    {chapter.formattedBook} {chapter._chapter}
-                                </Hidden>
-                            </Typography>
-                        </Button>
-                        {nextButton}
-                        <Search Results={Results} />
-                    </Toolbar>
-                </AppBar>
-
-                <SelectChapterDialog open={dialogOpen} onClose={closeDialog} />
+                <ChapterTopBar chapter={chapter} />
             </Hidden>
 
             <Grid container className={classes.gridContainer}>
@@ -122,18 +88,19 @@ export default function Chapter() {
                         <div className={classes.titleWrapper}>
                             <Hidden smDown>
                                 <Paper variant="outlined" className={classes.verse} square>
-                                    {prevButton}
+                                    <AdjacentChapterButton chapter={chapter} to="previous" />
                                     <Typography variant="h5" component="h2" className={classes.chapterTitle}>{chapter.formattedBook} {chapter._chapter}</Typography>
-                                    {nextButton}
+                                    <AdjacentChapterButton chapter={chapter} to="next" />
                                 </Paper>
                             </Hidden>
                         </div>
                         {chapter.verses.map(verse => (
-                            <Verse verse={verse} />
+                            <Verse key={verse._verse} verse={verse} active={selectedVerses[verse._verse]} onClick={() => toggleVerse(verse)} />
                         ))}
                     </Container>
                 </Grid>
             </Grid>
+            <HighlightVersesBar selectedVerses={selectedVersesArray} onClose={closeSelectedVersesMenu} onHighlight={highlightSelectedVerses} />
 
         </>
     )

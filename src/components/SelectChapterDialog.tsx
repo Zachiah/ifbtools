@@ -49,7 +49,7 @@ export default function SelectChapterDialog({ open, onClose }: { open: boolean, 
                             ._books
                             .map(_book => bible.books[_book])
                             .map((book) => (
-                                <ListItem button onClick={() => bookStep(book._book)}>
+                                <ListItem key={book._book} button onClick={() => bookStep(book._book)}>
                                     <ListItemText>{book.formattedBook}</ListItemText>
                                 </ListItem>
                             ))}

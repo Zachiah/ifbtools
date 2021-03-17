@@ -125,10 +125,6 @@ export type BibleBooks = ('genesis' | 'exodus' | 'leviticus' | 'numbers' | 'deut
 
 
 class BibleVerseBase {
-    _book: BibleBooks;
-    _chapter: number;
-    _verse: number;
-    text: string;
 
     constructor({ book, chapter, verse }: { book: BibleBooks, chapter: number, verse: number }) {
         this._book = book;
@@ -136,6 +132,7 @@ class BibleVerseBase {
         this._verse = verse;
         this.text = bible[book].chapters[chapter - 1].verses[verse - 1].text;
     }
+    _chapter: number;
 
     get book() {
         return new BibleBook({ book: this._book });
@@ -145,12 +142,33 @@ class BibleVerseBase {
         return new BibleChapter({ book: this._book, chapter: this._chapter });
     }
 
+
+
+
+    _book: BibleBooks;
+
+    get id() {
+        return `${this._book}-${this._chapter}-${this._verse}`;
+    }
+
+    static fromId(id: string) {
+        const matcher = new RegExp(String.raw`^(${theBible._books.join("|")})-(\d+)-(\d+)$`);
+        const match = id.match(matcher);
+        if (match) {
+            return new BibleVerse({ book: match[1] as BibleBooks, chapter: +match[2], verse: +match[3] })
+        }
+    }
+    _verse: number;
+    text: string;
+
+
+
     get verse() {
-        throw new Error('You are using the verse getter on a BibleVerse this is not what. You want you already have the verse, did you mean ._verse?')
+        throw new Error('You are using the verse getter on a BibleVerse this is not what. You already have the verse, did you mean ._verse?')
     }
 }
 
-let BibleVerse = BookNameFormatable(BibleVerseBase);
+export let BibleVerse = BookNameFormatable(BibleVerseBase);
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
 export type BibleVerse = BookNameFormatable & BibleVerseBase;
 
@@ -229,8 +247,10 @@ class BibleChapterBase {
     }
 
 
+
+
 }
-let BibleChapter = Searchable(BookNameFormatable(BibleChapterBase));
+export let BibleChapter = Searchable(BookNameFormatable(BibleChapterBase));
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
 export type BibleChapter = BibleChapterBase & BookNameFormatable & Searchable;
 
@@ -310,5 +330,9 @@ export type Bible = BibleBase & Searchable;
 
 const theBible = new Bible();
 export default theBible;
+
+export function useChapter(chapter: BibleChapter) {
+
+}
 
 (window as any).Bible = Bible;
