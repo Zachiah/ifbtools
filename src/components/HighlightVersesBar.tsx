@@ -12,8 +12,12 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         highlightChip: {
             marginLeft: theme.spacing(1),
-            marginRight: theme.spacing(1)
+            marginRight: theme.spacing(1),
+            border: "1px solid black"
         },
+        closeIcon: {
+            marginLeft: "auto"
+        }
     }),
 );
 
@@ -29,7 +33,7 @@ export default memo(function HighlightVersesBar({ open, onClose, onHighlight }: 
                     {colors.map(color => (
                         <Chip key={color} style={{ backgroundColor: color }} component="button" onClick={() => onHighlight(color)} className={classes.highlightChip} />
                     ))}
-                    <IconButton onClick={() => onClose()}>
+                    <IconButton onClick={() => onClose()} className={classes.closeIcon}>
                         <CloseIcon />
                     </IconButton>
                 </Toolbar>

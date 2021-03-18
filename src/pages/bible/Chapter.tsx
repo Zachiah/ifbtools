@@ -62,6 +62,7 @@ export default memo(function Chapter() {
                 console.log(verseId, charIds);
                 updateHighlights(BibleVerse.fromId(verseId), Object.fromEntries(charIds.map(item => [item, color])))
             });
+            setTextSelection(null);
             document.getSelection()?.empty()
         }
 
