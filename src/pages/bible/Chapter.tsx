@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import bible, { BibleVerse } from "util/Bible";
 
@@ -67,6 +67,15 @@ export default memo(function Chapter() {
         }
 
     }
+    useEffect(() => {
+        document.addEventListener("mouseup", handleMouseUp);
+        document.addEventListener("touchend", handleMouseUp);
+
+        return () => {
+            document.removeEventListener("mouseup", handleMouseUp);
+            document.removeEventListener("touchend", handleMouseUp);
+        }
+    })
 
     const getEmptySelectedVerses = () => Object.fromEntries(chapter.verses.map(verse => [verse._verse, false]));
 
@@ -95,6 +104,11 @@ export default memo(function Chapter() {
 
         const anchorNode = selection.anchorNode?.parentNode as HTMLElement;
         const focusNode = selection.focusNode?.parentNode as HTMLElement;
+
+        if (!anchorNode || !focusNode) {
+            setTextSelection(null)
+            return
+        }
 
         if (selection.type === "Caret") {
             console.log("No selection");
@@ -146,7 +160,7 @@ export default memo(function Chapter() {
                 <ChapterTopBar chapter={chapter} />
             </Hidden>
 
-            <Grid container className={classes.gridContainer} onMouseUp={handleMouseUp}>
+            <Grid container className={classes.gridContainer} onMouseUp={handleMouseUp} onTouchEnd={handleMouseUp}>
                 <Hidden smDown>
                     <Grid item md={3} className={classes.sidebar}>
                         <SelectChapterSidebar />

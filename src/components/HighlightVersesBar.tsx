@@ -25,7 +25,7 @@ export default memo(function HighlightVersesBar({ open, onClose, onHighlight }: 
 
     const classes = useStyles();
 
-    const colors = ["red", "green", "blue", "yellow", "orange", "transparent"];
+    const colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "brown", "#CCC", "transparent"];
     return (
         (open) ?
             <AppBar position="fixed" color="inherit">
