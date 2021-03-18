@@ -53,7 +53,7 @@ export default memo(function Chapter() {
     } = useHighlights(chapter.verses);
 
     function highlightSelection(color: string) {
-        if (selectedVerses.length) {
+        if (selectedVersesArray.length) {
             selectedVersesArray.map(verse => highlightWholeVerse(verse, color));
             closeSelectedVersesMenu();
         }
@@ -145,14 +145,14 @@ export default memo(function Chapter() {
                 <ChapterTopBar chapter={chapter} />
             </Hidden>
 
-            <Grid container className={classes.gridContainer}>
+            <Grid container className={classes.gridContainer} onMouseUp={handleMouseUp}>
                 <Hidden smDown>
                     <Grid item md={3} className={classes.sidebar}>
                         <SelectChapterSidebar />
                     </Grid>
                 </Hidden>
 
-                <Grid item md={9} xs={12} className={classes.mainContent} onMouseUp={handleMouseUp}>
+                <Grid item md={9} xs={12} className={classes.mainContent}>
                     <Container maxWidth="sm">
                         <div className={classes.titleWrapper}>
                             <Hidden smDown>
