@@ -17,13 +17,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default memo(function HighlightVersesBar({ selectedVerses, onClose, onHighlight }: { selectedVerses: BibleVerse[], onClose: () => any, onHighlight: (color: string) => any }) {
+export default memo(function HighlightVersesBar({ open, onClose, onHighlight }: { open: boolean, onClose: () => any, onHighlight: (color: string) => any }) {
 
     const classes = useStyles();
 
     const colors = ["red", "green", "blue", "yellow", "orange", "transparent"];
     return (
-        (selectedVerses.length > 0) ?
+        (open) ?
             <AppBar position="fixed" color="inherit">
                 <Toolbar variant="dense">
                     {colors.map(color => (

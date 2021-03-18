@@ -1,10 +1,9 @@
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import { memo, useEffect } from "react";
 
 import { BibleVerse } from "util/Bible";
 import Chip from "@material-ui/core/Chip";
 import Paper from "@material-ui/core/Paper";
-import { memo } from "react";
-import { useHighlight } from "state/useHighlights";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,7 +43,7 @@ export default memo(function Verse({ verse, active, onClick, highlightedText }: 
             <Chip label={verse._verse} size="small" className={classes.chip} onClick={onClick} component="button" />
             <div>
                 {highlightedText().map((item, id) => (
-                    <span key={id} style={{ backgroundColor: item.highlight }}>{item.char}</span>
+                    <span key={id} style={{ backgroundColor: item.highlight }} {...{ "data-bible-verse-id": `${verse.id}$${id}` }}>{item.char}</span>
                 ))}
             </div>
         </Paper>

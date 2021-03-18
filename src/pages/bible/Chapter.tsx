@@ -48,12 +48,23 @@ export default memo(function Chapter() {
 
     const {
         highlightWholeVerse,
-        highlightedText
+        highlightedText,
+        updateHighlights
     } = useHighlights(chapter.verses);
 
-    function highlightSelectedVerses(color: string) {
-        selectedVersesArray.map(verse => highlightWholeVerse(verse, color));
-        closeSelectedVersesMenu();
+    function highlightSelection(color: string) {
+        if (selectedVerses.length) {
+            selectedVersesArray.map(verse => highlightWholeVerse(verse, color));
+            closeSelectedVersesMenu();
+        }
+        else if (textSelection) {
+            Object.entries(textSelection).map(([verseId, charIds]) => {
+                console.log(verseId, charIds);
+                updateHighlights(BibleVerse.fromId(verseId), Object.fromEntries(charIds.map(item => [item, color])))
+            });
+            document.getSelection()?.empty()
+        }
+
     }
 
     const getEmptySelectedVerses = () => Object.fromEntries(chapter.verses.map(verse => [verse._verse, false]));
@@ -71,6 +82,60 @@ export default memo(function Chapter() {
 
     const selectedVersesArray = Object.entries(selectedVerses).filter(item => item[1]).map(item => chapter.getVerse(+item[0]));
 
+    const [textSelection, setTextSelection] = useState<null | { [k: string]: number[] }>(null);
+    const handleMouseUp = () => {
+        const selection = document.getSelection();
+        if (!selection) {
+            setTextSelection(null)
+            return
+        }
+
+        const anchorNode = selection.anchorNode?.parentNode as HTMLElement;
+        const focusNode = selection.focusNode?.parentNode as HTMLElement;
+
+        if (anchorNode === focusNode) {
+            console.log("No selection");
+            setTextSelection(null)
+            return
+        }
+
+        if (!(anchorNode.dataset.bibleVerseId && focusNode.dataset.bibleVerseId)) {
+            console.log(anchorNode.dataset, focusNode.dataset);
+            setTextSelection(null)
+            return
+        }
+
+        /* At this point we have a start and end node that are both verse characters */
+        console.log("There is a selection");
+        const nodes = Array.from(document.querySelectorAll("[data-bible-verse-id]")) as HTMLElement[];
+        const anchorNodeIndex = nodes.indexOf(anchorNode);
+        const focusNodeIndex = nodes.indexOf(focusNode);
+
+        let specialNodes;
+        console.log(nodes, anchorNodeIndex, focusNodeIndex);
+        if (anchorNodeIndex > focusNodeIndex) {
+            specialNodes = nodes.slice(focusNodeIndex, anchorNodeIndex + 1);
+        } else {
+            specialNodes = nodes.slice(anchorNodeIndex, focusNodeIndex + 1);
+        }
+
+        const characters = specialNodes.map(node => node.dataset.bibleVerseId as string).map(item => item.split("$"));
+        console.log(characters);
+
+        let charactersPartitioned: { [k: string]: number[] } = {};
+        for (let character of characters) {
+            charactersPartitioned[character[0]] = [...(charactersPartitioned[character[0]] || []), +(character[1])];
+        }
+
+        setTextSelection(charactersPartitioned);
+
+        // Object.entries(charactersPartitioned).map(([verseId, charIds]) => {
+        //     console.log(verseId, charIds);
+        //     updateHighlights(BibleVerse.fromId(verseId), Object.fromEntries(charIds.map(item => [item, "yellow"])))
+        // })
+
+    }
+
     return (
         <>
             <Hidden mdUp>
@@ -84,7 +149,7 @@ export default memo(function Chapter() {
                     </Grid>
                 </Hidden>
 
-                <Grid item md={9} xs={12} className={classes.mainContent}>
+                <Grid item md={9} xs={12} className={classes.mainContent} onMouseUp={handleMouseUp}>
                     <Container maxWidth="sm">
                         <div className={classes.titleWrapper}>
                             <Hidden smDown>
@@ -101,7 +166,7 @@ export default memo(function Chapter() {
                     </Container>
                 </Grid>
             </Grid>
-            <HighlightVersesBar selectedVerses={selectedVersesArray} onClose={closeSelectedVersesMenu} onHighlight={highlightSelectedVerses} />
+            <HighlightVersesBar open={selectedVerses.length || !!textSelection} onClose={closeSelectedVersesMenu} onHighlight={highlightSelection} />
 
         </>
     )

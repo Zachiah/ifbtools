@@ -1,5 +1,5 @@
 import { Store, useStores } from "./Store";
-import bible, { BibleChapter, BibleVerse } from "util/Bible";
+import bible, { BibleVerse } from "util/Bible";
 
 import { useMemo } from "react";
 
@@ -23,7 +23,7 @@ const highlightStores = new Proxy<{ [k: string]: Store<{ [k: number]: string; }>
             return target[name] || (target[name] = new Store(initialHighlights(BibleVerse.fromId(name))))
         }
         else {
-            throw "You've got a problem"
+            throw new Error("You've got a problem");
         }
     }
 });
