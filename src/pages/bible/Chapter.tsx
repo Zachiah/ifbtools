@@ -59,7 +59,6 @@ export default memo(function Chapter() {
         }
         else if (textSelection) {
             Object.entries(textSelection).map(([verseId, charIds]) => {
-                console.log(verseId, charIds);
                 updateHighlights(BibleVerse.fromId(verseId), Object.fromEntries(charIds.map(item => [item, color])))
             });
             setTextSelection(null);
@@ -111,13 +110,11 @@ export default memo(function Chapter() {
         }
 
         if (selection.type === "Caret") {
-            console.log("No selection");
             setTextSelection(null)
             return
         }
 
         if (!(anchorNode.dataset.bibleVerseId && focusNode.dataset.bibleVerseId)) {
-            console.log(anchorNode.dataset, focusNode.dataset);
             setTextSelection(null)
             return
         }
@@ -129,7 +126,6 @@ export default memo(function Chapter() {
         const focusNodeIndex = nodes.indexOf(focusNode);
 
         let specialNodes;
-        console.log(nodes, anchorNodeIndex, focusNodeIndex);
         if (anchorNodeIndex > focusNodeIndex) {
             specialNodes = nodes.slice(focusNodeIndex, anchorNodeIndex + 1);
         } else {
@@ -137,7 +133,6 @@ export default memo(function Chapter() {
         }
 
         const characters = specialNodes.map(node => node.dataset.bibleVerseId as string).map(item => item.split("$"));
-        console.log(characters);
 
         let charactersPartitioned: { [k: string]: number[] } = {};
         for (let character of characters) {
@@ -146,12 +141,6 @@ export default memo(function Chapter() {
 
         setTextSelection(charactersPartitioned);
         setSelectedVerses(getEmptySelectedVerses());
-
-        // Object.entries(charactersPartitioned).map(([verseId, charIds]) => {
-        //     console.log(verseId, charIds);
-        //     updateHighlights(BibleVerse.fromId(verseId), Object.fromEntries(charIds.map(item => [item, "yellow"])))
-        // })
-
     }
 
     return (
