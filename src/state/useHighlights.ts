@@ -1,5 +1,7 @@
 import { Store, useStores } from "./Store";
-import bible, { BibleVerse } from "util/Bible";
+import bible, { BibleChapter, BibleVerse } from "util/Bible";
+
+import { useMemo } from "react";
 
 const allVerses = [];
 for (let verse of bible.allVerses()) {
@@ -11,16 +13,27 @@ function highlightPersistanceId(verse: BibleVerse): string {
 }
 
 function initialHighlights(verse: BibleVerse) {
-    return JSON.parse(localStorage.getItem(highlightPersistanceId(verse)) || "{}");
+    return JSON.parse(localStorage.getItem(highlightPersistanceId(verse)) || "{}") as { [k: number]: string };
 }
 
-const highlightStores = Object.fromEntries(allVerses.map(item => [item.id, new Store(initialHighlights(item))]));
+//const highlightStores = Object.fromEntries(allVerses.map(item => [item.id, new Store(initialHighlights(item))]));
+const highlightStores = new Proxy<{ [k: string]: Store<{ [k: number]: string; }> }>({}, {
+    get(target, name, reciever) {
+        if (typeof name === "string") {
+            return target[name] || (target[name] = new Store(initialHighlights(BibleVerse.fromId(name))))
+        }
+        else {
+            throw "You've got a problem"
+        }
+    }
+});
 
 export function useHighlights(verseArray: BibleVerse[]) {
-    const [highlights, setHighlights] = useStores(Object.fromEntries(verseArray.map(verse => [verse.id, highlightStores[verse.id]])));
+    const stores = useMemo(() => Object.fromEntries(verseArray.map(verse => [verse.id, highlightStores[verse.id]])), [verseArray.map(item => item.id).join("&")])
+    const [highlights, setHighlights] = useStores(stores);
 
     function highlightedText(verse: BibleVerse) {
-        return verse.text.split("").map((char, id) => ({ char, highlight: highlights[verse.id][id] || "transparent" }));
+        return verse.text.split("").map((char, id) => ({ char, highlight: highlights[verse.id]?.[id] || "transparent" }));
     }
 
     function updateHighlights(verse: BibleVerse, obj: { [k: number]: string }) {

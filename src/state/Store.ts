@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 type Subscriber<T> = (oldVal: T, newVal: T) => any;
 
@@ -6,11 +6,14 @@ export class Store<T> {
     private _state: T;
     private subscribers: { [k: number]: Subscriber<T> };
     private index: number;
+    private static id: number = 0;
+    id: number;
 
     constructor(initialValue: T) {
         this._state = initialValue;
         this.index = 0;
         this.subscribers = {};
+        this.id = Store.id++;
     }
 
     private pingSubscribers(oldVal: T, newVal: T) {
@@ -55,12 +58,12 @@ export class Store<T> {
 export function useStore<T>(store: Store<T>) {
     const [value, setValue] = useState(store.state);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const unsubscribe = store.subscribe((oldVal, newVal) => {
             setValue(newVal);
         });
         return unsubscribe
-    }, [store]);
+    }, [store.id]);
 
 
     const newSetValue = (newVal: T | ((old: T) => T)) => {
@@ -78,15 +81,17 @@ export function useStores<T>(stores: { [k: string]: Store<T> }):
             newVal: T | ((old: T) => T)
         ) => void
     ] {
-    const [values, setValues] = useState(Object.fromEntries(Object.entries(stores).map(([id, store]) => [id, store.state])));
+    const [values, setValues] = useState(() => Object.fromEntries(Object.entries(stores).map(([id, store]) => [id, store.state])));
+    const ids = [Object.entries(stores).map(item => item[1].id)];
 
-    useEffect(() => {
+    useLayoutEffect(() => {
+        console.log("stores has changed")
         const unsubscribes = Object.entries(stores).map(([id, store]) => store.subscribe((oldVal, newVal) => {
             setValues((oldValues) => ({ ...oldValues, [id]: newVal }));
         }));
 
         return () => unsubscribes.forEach(item => item());
-    }, [stores]);
+    }, [ids.join("-")]);
 
 
     const setNewValue = (id: string, newVal: T | ((old: T) => T)) => {

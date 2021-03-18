@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import bible, { BibleVerse } from "util/Bible";
 
@@ -41,13 +41,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default function Chapter() {
+export default memo(function Chapter() {
     const classes = useStyles();
     const { book, chapter: chapterNumber } = useParams<{ book: string, chapter: string }>();
     const chapter = bible.books[book].getChapter(+chapterNumber);
 
     const {
-        highlightWholeVerse
+        highlightWholeVerse,
+        highlightedText
     } = useHighlights(chapter.verses);
 
     function highlightSelectedVerses(color: string) {
@@ -95,7 +96,7 @@ export default function Chapter() {
                             </Hidden>
                         </div>
                         {chapter.verses.map(verse => (
-                            <Verse key={verse._verse} verse={verse} active={selectedVerses[verse._verse]} onClick={() => toggleVerse(verse)} />
+                            <Verse key={verse._verse} verse={verse} active={selectedVerses[verse._verse]} onClick={() => toggleVerse(verse)} highlightedText={() => highlightedText(verse)} />
                         ))}
                     </Container>
                 </Grid>
@@ -104,4 +105,4 @@ export default function Chapter() {
 
         </>
     )
-}
+})

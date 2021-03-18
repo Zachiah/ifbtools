@@ -3,7 +3,8 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { BibleVerse } from "util/Bible";
 import Chip from "@material-ui/core/Chip";
 import Paper from "@material-ui/core/Paper";
-import { useHighlight } from "state/useHighlights"
+import { memo } from "react";
+import { useHighlight } from "state/useHighlights";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,12 +31,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default function Verse({ verse, active, onClick }: { verse: BibleVerse, active: boolean, onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => any }) {
+export default memo(function Verse({ verse, active, onClick, highlightedText }: {
+    verse: BibleVerse, active: boolean, onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => any, highlightedText: () => {
+        char: string;
+        highlight: string;
+    }[]
+}) {
     const classes = useStyles();
-
-    const {
-        highlightedText,
-    } = useHighlight(verse);
 
     return (
         <Paper variant="outlined" className={`${classes.verse}${active ? " " + classes.active : ""}`} square key={verse._verse}>
@@ -47,4 +49,4 @@ export default function Verse({ verse, active, onClick }: { verse: BibleVerse, a
             </div>
         </Paper>
     )
-}
+})

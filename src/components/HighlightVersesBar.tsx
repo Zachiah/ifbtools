@@ -6,6 +6,7 @@ import Chip from "@material-ui/core/Chip"
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
 import Toolbar from "@material-ui/core/Toolbar";
+import { memo } from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default function HighlightVersesBar({ selectedVerses, onClose, onHighlight }: { selectedVerses: BibleVerse[], onClose: () => any, onHighlight: (color: string) => any }) {
+export default memo(function HighlightVersesBar({ selectedVerses, onClose, onHighlight }: { selectedVerses: BibleVerse[], onClose: () => any, onHighlight: (color: string) => any }) {
 
     const classes = useStyles();
 
@@ -34,4 +35,4 @@ export default function HighlightVersesBar({ selectedVerses, onClose, onHighligh
                 </Toolbar>
             </AppBar> : <></>
     )
-}
+});

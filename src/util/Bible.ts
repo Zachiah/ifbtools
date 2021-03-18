@@ -157,6 +157,9 @@ class BibleVerseBase {
         if (match) {
             return new BibleVerse({ book: match[1] as BibleBooks, chapter: +match[2], verse: +match[3] })
         }
+        else {
+            throw "Invalid Verse Id " + id;
+        }
     }
     _verse: number;
     text: string;
