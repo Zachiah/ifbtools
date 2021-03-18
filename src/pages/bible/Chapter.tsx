@@ -67,12 +67,10 @@ export default memo(function Chapter() {
 
     }
     useEffect(() => {
-        document.addEventListener("mouseup", handleMouseUp);
-        document.addEventListener("touchend", handleMouseUp);
+        document.addEventListener("selectionchange", handleMouseUp);
 
         return () => {
-            document.removeEventListener("mouseup", handleMouseUp);
-            document.removeEventListener("touchend", handleMouseUp);
+            document.removeEventListener("selectionchange", handleMouseUp);
         }
     })
 
