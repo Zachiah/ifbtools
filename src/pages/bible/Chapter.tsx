@@ -95,7 +95,7 @@ export default memo(function Chapter() {
         const anchorNode = selection.anchorNode?.parentNode as HTMLElement;
         const focusNode = selection.focusNode?.parentNode as HTMLElement;
 
-        if (anchorNode === focusNode) {
+        if (selection.type === "Caret") {
             console.log("No selection");
             setTextSelection(null)
             return
