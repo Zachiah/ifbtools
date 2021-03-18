@@ -73,7 +73,9 @@ export default memo(function Chapter() {
 
 
     const toggleVerse = (verse: BibleVerse) => {
-        setSelectedVerses({ ...selectedVerses, [verse._verse]: !selectedVerses[verse._verse] })
+        setSelectedVerses({ ...selectedVerses, [verse._verse]: !selectedVerses[verse._verse] });
+        setTextSelection(null);
+        document.getSelection()?.empty();
     }
 
     const closeSelectedVersesMenu = () => {
@@ -128,6 +130,7 @@ export default memo(function Chapter() {
         }
 
         setTextSelection(charactersPartitioned);
+        setSelectedVerses(getEmptySelectedVerses());
 
         // Object.entries(charactersPartitioned).map(([verseId, charIds]) => {
         //     console.log(verseId, charIds);
@@ -166,7 +169,7 @@ export default memo(function Chapter() {
                     </Container>
                 </Grid>
             </Grid>
-            <HighlightVersesBar open={selectedVerses.length || !!textSelection} onClose={closeSelectedVersesMenu} onHighlight={highlightSelection} />
+            <HighlightVersesBar open={!!selectedVersesArray.length || !!textSelection} onClose={closeSelectedVersesMenu} onHighlight={highlightSelection} />
 
         </>
     )
