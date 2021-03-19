@@ -89,6 +89,20 @@ export default memo(function Chapter() {
         setSelectedVerses(getEmptySelectedVerses());
     }
 
+    const copySelection = () => {
+        if (selectedVersesArray.length) {
+            const el = document.createElement("textarea");
+            el.setAttribute("cols", "40000");
+            document.body.appendChild(el);
+            el.innerHTML = `${selectedVersesArray[0].formattedBook} ${selectedVersesArray[0]._chapter}:${selectedVersesArray.map(item => item._verse).join(",")}\n\n${selectedVersesArray.map(item => item.text).join("\n\n")}`;
+            el.select();
+            document.execCommand("copy");
+            el.remove();
+        } else if (textSelection) {
+            document.execCommand("copy");
+        }
+    }
+
     const selectedVersesArray = Object.entries(selectedVerses).filter(item => item[1]).map(item => chapter.getVerse(+item[0]));
 
     const [textSelection, setTextSelection] = useState<null | { [k: string]: number[] }>(null);
@@ -171,7 +185,12 @@ export default memo(function Chapter() {
                     </Container>
                 </Grid>
             </Grid>
-            <HighlightVersesBar open={!!selectedVersesArray.length || !!textSelection} onClose={closeSelectedVersesMenu} onHighlight={highlightSelection} />
+            <HighlightVersesBar
+                open={!!selectedVersesArray.length || !!textSelection}
+                onClose={closeSelectedVersesMenu}
+                onHighlight={highlightSelection}
+                onCopy={copySelection}
+            />
 
         </>
     )

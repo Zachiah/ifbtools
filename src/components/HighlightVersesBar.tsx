@@ -5,6 +5,7 @@ import AppBar from "@material-ui/core/AppBar";
 import { BibleVerse } from "util/Bible";
 import Chip from "@material-ui/core/Chip"
 import CloseIcon from "@material-ui/icons/Close";
+import CopyIcon from "@material-ui/icons/FileCopy";
 import IconButton from "@material-ui/core/IconButton";
 import Toolbar from "@material-ui/core/Toolbar";
 
@@ -17,30 +18,87 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         closeIcon: {
             marginLeft: "auto"
+        },
+        colorsWrapper: {
+            display: "flex",
+            overflow: "auto",
+            margin: "0px 3px",
+            padding: "2px",
+            boxShadow: "0 0 4px black",
+
+            "&::-webkit-scrollbar": {
+                height: "4px"
+            },
+            "&::-webkit-scrollbar-thumb": {
+                background: "grey",
+            }
         }
     }),
 );
 
-export default memo(function HighlightVersesBar({ open, onClose, onHighlight }: { open: boolean, onClose: () => any, onHighlight: (color: string) => any }) {
+export default memo(function HighlightVersesBar({ open, onClose, onHighlight, onCopy }:
+    {
+        open: boolean,
+        onClose: () => any,
+        onHighlight: (color: string) => any,
+        onCopy: () => any
+    }) {
 
     const classes = useStyles();
-    const [selectedColor, setSelectedColor] = useState("");
 
     const handleHighlight = (color: string) => {
-        setSelectedColor("");
         onHighlight(color)
     }
 
-    const colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "brown", "#CCC", "transparent"];
+    const colors = [
+        "transparent",
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "burlywood",
+        "blanchedalmond",
+        "goldenrod",
+        "palegoldenrod",
+        "palegreen",
+        "paleturquoise",
+        "palevioletred",
+        "papayawhip",
+        "peachpuff",
+        "peru",
+        "pink",
+        "plum",
+        "powderblue",
+        "purple",
+        "greenyellow",
+        "royalblue",
+        "blueviolet",
+        "rebeccapurple",
+        "wheat",
+        "firebrick",
+        "fuscia",
+        "forestgreen",
+        "floralwhite",
+        "blue",
+        "indigo",
+        "violet",
+        "brown",
+        "turquoise",
+        "aliceblue",
+        "#777", "#999", "#BBB", "#CCC", "#EEE"
+    ];
     return (
         (open) ?
             <AppBar position="fixed" color="inherit">
                 <Toolbar variant="dense">
-                    {colors.map(color => (
-                        <Chip key={color} style={{ backgroundColor: color }} component="button" onClick={() => handleHighlight(color)} className={classes.highlightChip} />
-                    ))}
-                    <input type="color" onChange={(e) => setSelectedColor(e.target.value)} />
-                    {selectedColor && <button onClick={() => handleHighlight(selectedColor)}>Go</button>}
+                    <IconButton onClick={onCopy}>
+                        <CopyIcon />
+                    </IconButton>
+                    <div className={classes.colorsWrapper}>
+                        {colors.map(color => (
+                            <Chip key={color} style={{ backgroundColor: color }} component="button" onClick={() => handleHighlight(color)} className={classes.highlightChip} />
+                        ))}
+                    </div>
                     <IconButton onClick={() => onClose()} className={classes.closeIcon}>
                         <CloseIcon />
                     </IconButton>
