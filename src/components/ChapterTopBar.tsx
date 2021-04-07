@@ -23,11 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
         }
     }),
 );
-function Results({ query }: { query: string }) {
-    return (
-        <>{query}</>
-    )
-}
 
 
 export default memo(function ChapterTopBar({ chapter }: { chapter: BibleChapter }) {
@@ -52,7 +47,7 @@ export default memo(function ChapterTopBar({ chapter }: { chapter: BibleChapter 
                         </Typography>
                     </Button>
                     <AdjacentChapterButton chapter={chapter} to="next" />
-                    <Search Results={Results} className={classes.search} />
+                    <Search className={classes.search} />
                 </Toolbar>
             </AppBar>
 

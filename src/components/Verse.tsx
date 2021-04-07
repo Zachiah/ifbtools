@@ -30,21 +30,22 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default memo(function Verse({ verse, active, onClick, highlightedText }: {
-    verse: BibleVerse, active: boolean, onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => any, highlightedText: () => {
+export default memo(function Verse({ verse, active, onClick, highlightedText, fullReference }: {
+    verse: BibleVerse, active: boolean, onClick?: (e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => any, highlightedText?: () => {
         char: string;
         highlight: string;
-    }[]
+    }[], fullReference?: boolean
 }) {
     const classes = useStyles();
 
     return (
         <Paper variant="outlined" className={`${classes.verse}${active ? " " + classes.active : ""}`} square key={verse._verse}>
-            <Chip label={verse._verse} size="small" className={classes.chip} onClick={onClick} component="button" />
+            <Chip label={fullReference ? verse.formattedReference : verse._verse} size="small" className={classes.chip} onClick={onClick} component="button" />
             <div>
-                {highlightedText().map((item, id) => (
+                {highlightedText && highlightedText().map((item, id) => (
                     <span key={id} style={{ backgroundColor: item.highlight }} {...{ "data-bible-verse-id": `${verse.id}$${id}` }}>{item.char}</span>
                 ))}
+                {!highlightedText && verse.text}
             </div>
         </Paper>
     )

@@ -98,10 +98,24 @@ export type Searchable = { search(query: string, options: {}): Iterator<BibleVer
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the variable the same as the type
 function Searchable<TBase extends SearchableContract>(Base: TBase) {
     return class Searchable extends Base {
-        *search(query: string, options: {}): Iterator<BibleVerse> {
-            for (const verse of this.allVerses()) {
-                if (verse.text.indexOf(query) !== -1) {
-                    yield verse;
+        *search(query: string, options: { caseSensitive?: boolean }) {
+            if (query === "") {
+
+            }
+            else {
+                if (options.caseSensitive) {
+                    for (const verse of this.allVerses()) {
+                        if (verse.text.indexOf(query) !== -1) {
+                            yield verse;
+                        }
+                    }
+                }
+                else {
+                    for (const verse of this.allVerses()) {
+                        if (verse.text.toLowerCase().indexOf(query.toLowerCase()) !== -1) {
+                            yield verse;
+                        }
+                    }
                 }
             }
         }
@@ -164,7 +178,9 @@ class BibleVerseBase {
     _verse: number;
     text: string;
 
-
+    get formattedReference() {
+        return `${(this as any).formattedBook} ${this._chapter}:${this._verse}`
+    }
 
     get verse() {
         throw new Error('You are using the verse getter on a BibleVerse this is not what. You already have the verse, did you mean ._verse?')
