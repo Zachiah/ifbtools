@@ -105,6 +105,7 @@ export default memo(function SermonEditor({ id }: { id: string }) {
                         commands.codePreview,
                         commands.codeLive,
                         commands.codeEdit,
+                        commands.fullscreen,
                         
                     ]}
                     height={400}
