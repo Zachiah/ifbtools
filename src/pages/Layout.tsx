@@ -3,6 +3,7 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { memo, useEffect } from "react";
 
 import BibleLayout from "./bible/Layout";
+import SermonsLayout from "./sermons/Layout";
 import BottomBar from "../components/BottomBar";
 import Hidden from "@material-ui/core/Hidden";
 import Index from "./Index";
@@ -49,6 +50,10 @@ export default memo(function Layout() {
                 <Switch>
                     <Route path="/bible">
                         <BibleLayout />
+                    </Route>
+
+                    <Route path="/sermons">
+                        <SermonsLayout />
                     </Route>
 
                     <Route exact path="/">

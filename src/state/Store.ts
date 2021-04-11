@@ -69,8 +69,8 @@ export function useStore<T>(store: Store<T>) {
     const newSetValue = (newVal: T | ((old: T) => T)) => {
         store.update(newVal);
     }
-
-    return [value, newSetValue];
+    const returnVal : [T, (newVal: T | ((old: T) => T)) => void] = [value,newSetValue];
+    return returnVal;
 }
 
 export function useStores<T>(stores: { [k: string]: Store<T> }):
@@ -98,5 +98,7 @@ export function useStores<T>(stores: { [k: string]: Store<T> }):
         stores[id].update(newVal)
     }
 
-    return [values, setNewValue]
+    const returnVal : [{[k: string]: T}, ((id: string, newVal: T | ((old: T) => T)) => void)] =  [values, setNewValue];
+
+    return returnVal;
 }

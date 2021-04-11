@@ -145,6 +145,9 @@ class BibleVerseBase {
         this._chapter = chapter;
         this._verse = verse;
         this.text = bible[book].chapters[chapter - 1].verses[verse - 1].text;
+        if (!this.text) {
+            throw new Error("Invalid verse");
+        }
     }
     _chapter: number;
 
@@ -211,7 +214,10 @@ class BibleChapterBase {
     }
 
     getVerse(num: number) {
-        return this.verses[num - 1];
+        if (this.verses[num-1]) {
+            return this.verses[num - 1];
+        }
+        throw new Error("invalid verse number")
     }
 
     *allVerses() {
