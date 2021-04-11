@@ -43,7 +43,7 @@ export default memo(function Layout() {
 
     return (
         <div className={styles.wrapper}>
-            <TopBar title="IFB Tools" items={[{ url: "/bible", display: "Bible" }]} />
+            <TopBar title="IFB Tools" items={[{ url: "/bible", display: "Bible" }, {url: '/sermons', display: "Sermons"}]} />
 
 
             <main className={styles.main}>

@@ -25,7 +25,6 @@ export default function BottomBar() {
         <BottomNavigation value={location.pathname.split("/")[1]} showLabels>
             <BottomNavigationAction icon={<BookIcon />} label="Bible" component={Link} to="/bible" value="bible" />
             <BottomNavigationAction icon={<CreateIcon />} label="Sermon" component={Link} to="/sermons" value="sermon" />
-            <BottomNavigationAction icon={<VisibilityIcon />} label="Preview" component={Link} to="/" value="preview" />
         </BottomNavigation>
     </AppBar>
     )
