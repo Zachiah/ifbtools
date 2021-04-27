@@ -1,0 +1,32 @@
+.SermonEditor-content-editor-wrapper {
+    .prosemirror-toolbar {
+
+        border: none;
+        padding: 0px;
+        margin: 0px;
+
+        display: flex;
+
+        .prosemirror-toolbar-group {
+            
+            border: none;
+            padding: 0px;
+            margin: 0px;
+            display: flex;
+        }
+        .prosemirror-toolbar-item {
+            border: none;
+            padding: 0px;
+            margin: 0px;
+            border: 1px solid grey;
+
+            &[data-active="true"] {
+                fill: white;
+            }
+        }
+    }
+
+    .prosemirror-editor {
+        border: 1px solid grey;
+    }
+}

@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 import { useSermon } from "state/useSermons";
-import SermonEditor from "components/SermonEditor";
+import SermonEditor from "components/SermonEditor/SermonEditor";
 import "styles/md-editor-styles.css"
 
 
