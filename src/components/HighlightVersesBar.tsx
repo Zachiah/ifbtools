@@ -7,6 +7,7 @@ import Chip from "@material-ui/core/Chip"
 import CloseIcon from "@material-ui/icons/Close";
 import CopyIcon from "@material-ui/icons/FileCopy";
 import IconButton from "@material-ui/core/IconButton";
+import LinkIcon from "@material-ui/icons/Link"
 import Toolbar from "@material-ui/core/Toolbar";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,12 +37,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default memo(function HighlightVersesBar({ open, onClose, onHighlight, onCopy }:
+export default memo(function HighlightVersesBar({ open, onClose, onHighlight, onCopy,selectionTypeVerse,onCopyShortCode }:
     {
         open: boolean,
         onClose: () => any,
         onHighlight: (color: string) => any,
-        onCopy: () => any
+        onCopy: () => any,
+        onCopyShortCode: () => any,
+        selectionTypeVerse: boolean
     }) {
 
     const classes = useStyles();
@@ -100,6 +103,12 @@ export default memo(function HighlightVersesBar({ open, onClose, onHighlight, on
                     <IconButton onClick={onCopy}>
                         <CopyIcon />
                     </IconButton>
+                    {selectionTypeVerse && (
+                        <IconButton onClick={onCopyShortCode}>
+                            <LinkIcon />
+                        </IconButton>
+                    )
+                    }
                     <div className={classes.colorsWrapper}>
                         {colors.map(color => (
                             <Chip key={color} style={{ backgroundColor: color }} component="button" onClick={() => handleHighlight(color)} className={classes.highlightChip} />

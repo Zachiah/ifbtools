@@ -24,10 +24,10 @@ export default memo(function SermonContentEditor({
         plugins: [
           "advlist autolink lists link image charmap print preview anchor",
           "searchreplace visualblocks code fullscreen",
-          "insertdatetime media table paste code help wordcount",
+          "insertdatetime media table paste code help wordcount searchreplace",
         ],
         toolbar:
-          "undo redo | formatselect | " +
+          "undo redo searchreplace | formatselect | " +
           "bold italic backcolor | alignleft aligncenter " +
           "alignright alignjustify | bullist numlist outdent indent | " +
           "removeformat | help",

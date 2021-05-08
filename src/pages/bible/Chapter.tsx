@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useState } from 'react';
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import React, { memo, useEffect, useState } from "react";
+import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import bible, { BibleVerse } from "util/Bible";
 
 import AdjacentChapterButton from "components/AdjacentChapterButton";
@@ -7,191 +7,265 @@ import ChapterTopBar from "components/ChapterTopBar";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Hidden from "@material-ui/core/Hidden";
-import HighlightVersesBar from 'components/HighlightVersesBar';
+import HighlightVersesBar from "components/HighlightVersesBar";
 import Paper from "@material-ui/core/Paper";
 import SelectChapterSidebar from "components/SelectChapterSidebar";
-import Typography from "@material-ui/core/Typography"
+import Typography from "@material-ui/core/Typography";
 import Verse from "components/Verse";
-import { useHighlights } from 'state/useHighlights';
+import { useHighlights } from "state/useHighlights";
 import { useParams } from "react-router-dom";
+import partition from "lodash.partition";
 
 const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        verse: {
-            padding: theme.spacing(2)
-        },
-        sidebar: {
-            height: "100%",
-            overflow: "auto"
-        },
-        gridContainer: {
-            height: "100%"
-        },
-        mainContent: {
-            height: "100%",
-            overflow: "auto"
-        },
-        titleWrapper: {
-            paddingBottom: theme.spacing(2)
-        },
-        chapterTitle: {
-            display: "inline-block"
-        }
-
-    }),
+  createStyles({
+    verse: {
+      padding: theme.spacing(2),
+    },
+    sidebar: {
+      height: "100%",
+      overflow: "auto",
+    },
+    gridContainer: {
+      height: "100%",
+    },
+    mainContent: {
+      height: "100%",
+      overflow: "auto",
+    },
+    titleWrapper: {
+      paddingBottom: theme.spacing(2),
+    },
+    chapterTitle: {
+      display: "inline-block",
+    },
+  })
 );
 
 export default memo(function Chapter() {
-    const classes = useStyles();
-    const { book, chapter: chapterNumber } = useParams<{ book: string, chapter: string }>();
-    const chapter = bible.books[book].getChapter(+chapterNumber);
+  const classes = useStyles();
+  const { book, chapter: chapterNumber } = useParams<{
+    book: string;
+    chapter: string;
+  }>();
+  const chapter = bible.books[book].getChapter(+chapterNumber);
 
-    const {
-        highlightWholeVerse,
-        highlightedText,
-        updateHighlights
-    } = useHighlights(chapter.verses);
+  const {
+    highlightWholeVerse,
+    highlightedText,
+    updateHighlights,
+  } = useHighlights(chapter.verses);
 
-    function highlightSelection(color: string) {
-        if (selectedVersesArray.length) {
-            selectedVersesArray.map(verse => highlightWholeVerse(verse, color));
-            closeSelectedVersesMenu();
-        }
-        else if (textSelection) {
-            Object.entries(textSelection).map(([verseId, charIds]) => {
-                updateHighlights(BibleVerse.fromId(verseId), Object.fromEntries(charIds.map(item => [item, color])))
-            });
-            setTextSelection(null);
-            document.getSelection()?.empty()
-        }
-
+  function highlightSelection(color: string) {
+    if (selectedVersesArray.length) {
+      selectedVersesArray.map((verse) => highlightWholeVerse(verse, color));
+      closeSelectedVersesMenu();
+    } else if (textSelection) {
+      Object.entries(textSelection).map(([verseId, charIds]) => {
+        updateHighlights(
+          BibleVerse.fromId(verseId),
+          Object.fromEntries(charIds.map((item) => [item, color]))
+        );
+      });
+      setTextSelection(null);
+      document.getSelection()?.empty();
     }
-    useEffect(() => {
-        document.addEventListener("selectionchange", handleMouseUp);
+  }
+  useEffect(() => {
+    document.addEventListener("selectionchange", handleMouseUp);
 
-        return () => {
-            document.removeEventListener("selectionchange", handleMouseUp);
+    return () => {
+      document.removeEventListener("selectionchange", handleMouseUp);
+    };
+  });
+
+  const getEmptySelectedVerses = () =>
+    Object.fromEntries(chapter.verses.map((verse) => [verse._verse, false]));
+
+  const [selectedVerses, setSelectedVerses] = useState(getEmptySelectedVerses);
+
+  const toggleVerse = (verse: BibleVerse) => {
+    setSelectedVerses({
+      ...selectedVerses,
+      [verse._verse]: !selectedVerses[verse._verse],
+    });
+    setTextSelection(null);
+    document.getSelection()?.empty();
+  };
+
+  const closeSelectedVersesMenu = () => {
+    setSelectedVerses(getEmptySelectedVerses());
+  };
+
+  const copyText = (text: string) => {
+    const el = document.createElement("textarea");
+    el.setAttribute("cols", "40000");
+    document.body.appendChild(el);
+    el.innerHTML = text;
+    el.select();
+    document.execCommand("copy");
+    el.remove();
+  };
+
+  let formatNumberRange = (numbers: number[]) => {
+    numbers = [...new Set(numbers)].sort((a, b) => a - b);
+    let result: (number | "-" | ",")[] = [];
+
+    numbers.forEach((num, index) => {
+      if (result.length === 0) {
+        result = [...result, num];
+      } else {
+        const lastItem = result[result.length - 1];
+        if (typeof lastItem === "number") {
+          if (lastItem === num - 1) {
+            result = [...result, "-"];
+            if (!(numbers[index + 1] === num + 1)) {
+              result = [...result, num];
+            }
+          } else {
+            result = [...result, ",", num];
+          }
+        } else if (lastItem === "-") {
+          if (!(numbers[index + 1] === num + 1)) {
+            result = [...result, num];
+          }
         }
-    })
+      }
+    });
 
-    const getEmptySelectedVerses = () => Object.fromEntries(chapter.verses.map(verse => [verse._verse, false]));
+    return result.join("");
+  };
 
-    const [selectedVerses, setSelectedVerses] = useState(getEmptySelectedVerses);
 
+  const copySelection = () => {
+    if (selectedVersesArray.length) {
+      copyText(`${chapter.formattedBook} ${chapterNumber}:${formatNumberRange(selectedVersesArray.map(i => i._verse))}\n\n${selectedVersesArray.map(item => item.text).join("\n\n")}`);
+    } else if (textSelection) {
+      document.execCommand("copy");
+    }
+  };
 
-    const toggleVerse = (verse: BibleVerse) => {
-        setSelectedVerses({ ...selectedVerses, [verse._verse]: !selectedVerses[verse._verse] });
-        setTextSelection(null);
-        document.getSelection()?.empty();
+  const copyShortCode = () => {
+    copyText(`[passage book="${chapter._book}" chapter="${chapterNumber}" verses="${formatNumberRange(selectedVersesArray.map(i => i._verse))}"]`);
+  };
+
+  const selectedVersesArray = Object.entries(selectedVerses)
+    .filter((item) => item[1])
+    .map((item) => chapter.getVerse(+item[0]));
+
+  const [textSelection, setTextSelection] = useState<null | {
+    [k: string]: number[];
+  }>(null);
+  const handleMouseUp = () => {
+    const selection = document.getSelection();
+    if (!selection) {
+      setTextSelection(null);
+      return;
     }
 
-    const closeSelectedVersesMenu = () => {
-        setSelectedVerses(getEmptySelectedVerses());
+    const anchorNode = selection.anchorNode?.parentNode as HTMLElement;
+    const focusNode = selection.focusNode?.parentNode as HTMLElement;
+
+    if (!anchorNode || !focusNode) {
+      setTextSelection(null);
+      return;
     }
 
-    const copySelection = () => {
-        if (selectedVersesArray.length) {
-            const el = document.createElement("textarea");
-            el.setAttribute("cols", "40000");
-            document.body.appendChild(el);
-            el.innerHTML = `${selectedVersesArray[0].formattedBook} ${selectedVersesArray[0]._chapter}:${selectedVersesArray.map(item => item._verse).join(",")}\n\n${selectedVersesArray.map(item => item.text).join("\n\n")}`;
-            el.select();
-            document.execCommand("copy");
-            el.remove();
-        } else if (textSelection) {
-            document.execCommand("copy");
-        }
+    if (selection.type === "Caret") {
+      setTextSelection(null);
+      return;
     }
 
-    const selectedVersesArray = Object.entries(selectedVerses).filter(item => item[1]).map(item => chapter.getVerse(+item[0]));
-
-    const [textSelection, setTextSelection] = useState<null | { [k: string]: number[] }>(null);
-    const handleMouseUp = () => {
-        const selection = document.getSelection();
-        if (!selection) {
-            setTextSelection(null)
-            return
-        }
-
-        const anchorNode = selection.anchorNode?.parentNode as HTMLElement;
-        const focusNode = selection.focusNode?.parentNode as HTMLElement;
-
-        if (!anchorNode || !focusNode) {
-            setTextSelection(null)
-            return
-        }
-
-        if (selection.type === "Caret") {
-            setTextSelection(null)
-            return
-        }
-
-        if (!(anchorNode.dataset.bibleVerseId && focusNode.dataset.bibleVerseId)) {
-            setTextSelection(null)
-            return
-        }
-
-        /* At this point we have a start and end node that are both verse characters */
-        console.log("There is a selection");
-        const nodes = Array.from(document.querySelectorAll("[data-bible-verse-id]")) as HTMLElement[];
-        const anchorNodeIndex = nodes.indexOf(anchorNode);
-        const focusNodeIndex = nodes.indexOf(focusNode);
-
-        let specialNodes;
-        if (anchorNodeIndex > focusNodeIndex) {
-            specialNodes = nodes.slice(focusNodeIndex, anchorNodeIndex + 1);
-        } else {
-            specialNodes = nodes.slice(anchorNodeIndex, focusNodeIndex + 1);
-        }
-
-        const characters = specialNodes.map(node => node.dataset.bibleVerseId as string).map(item => item.split("$"));
-
-        let charactersPartitioned: { [k: string]: number[] } = {};
-        for (let character of characters) {
-            charactersPartitioned[character[0]] = [...(charactersPartitioned[character[0]] || []), +(character[1])];
-        }
-
-        setTextSelection(charactersPartitioned);
-        setSelectedVerses(getEmptySelectedVerses());
+    if (!(anchorNode.dataset.bibleVerseId && focusNode.dataset.bibleVerseId)) {
+      setTextSelection(null);
+      return;
     }
 
-    return (
-        <>
-            <Hidden mdUp>
-                <ChapterTopBar chapter={chapter} />
-            </Hidden>
+    /* At this point we have a start and end node that are both verse characters */
+    console.log("There is a selection");
+    const nodes = Array.from(
+      document.querySelectorAll("[data-bible-verse-id]")
+    ) as HTMLElement[];
+    const anchorNodeIndex = nodes.indexOf(anchorNode);
+    const focusNodeIndex = nodes.indexOf(focusNode);
 
-            <Grid container className={classes.gridContainer} onMouseUp={handleMouseUp} onTouchEnd={handleMouseUp}>
-                <Hidden smDown>
-                    <Grid item md={3} className={classes.sidebar}>
-                        <SelectChapterSidebar />
-                    </Grid>
-                </Hidden>
+    let specialNodes;
+    if (anchorNodeIndex > focusNodeIndex) {
+      specialNodes = nodes.slice(focusNodeIndex, anchorNodeIndex + 1);
+    } else {
+      specialNodes = nodes.slice(anchorNodeIndex, focusNodeIndex + 1);
+    }
 
-                <Grid item md={9} xs={12} className={classes.mainContent}>
-                    <Container maxWidth="sm">
-                        <div className={classes.titleWrapper}>
-                            <Hidden smDown>
-                                <Paper variant="outlined" className={classes.verse} square>
-                                    <AdjacentChapterButton chapter={chapter} to="previous" />
-                                    <Typography variant="h5" component="h2" className={classes.chapterTitle}>{chapter.formattedBook} {chapter._chapter}</Typography>
-                                    <AdjacentChapterButton chapter={chapter} to="next" />
-                                </Paper>
-                            </Hidden>
-                        </div>
-                        {chapter.verses.map(verse => (
-                            <Verse key={verse._verse} verse={verse} active={selectedVerses[verse._verse]} onClick={() => toggleVerse(verse)} highlightedText={() => highlightedText(verse)} />
-                        ))}
-                    </Container>
-                </Grid>
-            </Grid>
-            <HighlightVersesBar
-                open={!!selectedVersesArray.length || !!textSelection}
-                onClose={closeSelectedVersesMenu}
-                onHighlight={highlightSelection}
-                onCopy={copySelection}
-            />
+    const characters = specialNodes
+      .map((node) => node.dataset.bibleVerseId as string)
+      .map((item) => item.split("$"));
 
-        </>
-    )
-})
+    let charactersPartitioned: { [k: string]: number[] } = {};
+    for (let character of characters) {
+      charactersPartitioned[character[0]] = [
+        ...(charactersPartitioned[character[0]] || []),
+        +character[1],
+      ];
+    }
+
+    setTextSelection(charactersPartitioned);
+    setSelectedVerses(getEmptySelectedVerses());
+  };
+
+  return (
+    <>
+      <Hidden mdUp>
+        <ChapterTopBar chapter={chapter} />
+      </Hidden>
+
+      <Grid
+        container
+        className={classes.gridContainer}
+        onMouseUp={handleMouseUp}
+        onTouchEnd={handleMouseUp}
+      >
+        <Hidden smDown>
+          <Grid item md={3} className={classes.sidebar}>
+            <SelectChapterSidebar />
+          </Grid>
+        </Hidden>
+
+        <Grid item md={9} xs={12} className={classes.mainContent}>
+          <Container maxWidth="sm">
+            <div className={classes.titleWrapper}>
+              <Hidden smDown>
+                <Paper variant="outlined" className={classes.verse} square>
+                  <AdjacentChapterButton chapter={chapter} to="previous" />
+                  <Typography
+                    variant="h5"
+                    component="h2"
+                    className={classes.chapterTitle}
+                  >
+                    {chapter.formattedBook} {chapter._chapter}
+                  </Typography>
+                  <AdjacentChapterButton chapter={chapter} to="next" />
+                </Paper>
+              </Hidden>
+            </div>
+            {chapter.verses.map((verse) => (
+              <Verse
+                key={verse._verse}
+                verse={verse}
+                active={selectedVerses[verse._verse]}
+                onClick={() => toggleVerse(verse)}
+                highlightedText={() => highlightedText(verse)}
+              />
+            ))}
+          </Container>
+        </Grid>
+      </Grid>
+      <HighlightVersesBar
+        open={!!selectedVersesArray.length || !!textSelection}
+        onClose={closeSelectedVersesMenu}
+        onHighlight={highlightSelection}
+        onCopy={copySelection}
+        selectionTypeVerse={selectedVersesArray.length > 0}
+        onCopyShortCode={copyShortCode}
+      />
+    </>
+  );
+});

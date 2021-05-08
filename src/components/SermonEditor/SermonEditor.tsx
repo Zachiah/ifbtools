@@ -1,10 +1,12 @@
 import Sermon from "util/Sermon";
-import { ChangeEvent, useState, memo } from "react";
+import { ChangeEvent, useState, memo, useEffect } from "react";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import SermonEditorTopBar from "components/SermonEditorTopBar";
+import SermonEditorTopBar from "components/SermonEditor/SermonEditorTopBar";
 import { useSermon } from "state/useSermons";
 import SermonTitleEditor from "components/SermonTitleEditor";
 import SermonContentEditor from "./SermonContentEditor";
+import ViewSermon from "./ViewSermon";
+import { Prompt } from "react-router";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,8 +31,11 @@ export default memo(function SermonEditor({ id }: { id: string }) {
 
   const [tempContent, setTempContent] = useState(sermon.content);
   const [tempContentHasChange, setTempContentHasChanges] = useState(false);
+  const [view, setView] = useState<boolean>(() =>
+    new URL(window.location.href).searchParams.get("view") ? true : false
+  );
 
-  const hasChanges = tempContentHasChange || (sermon.title !== tempTitle);
+  const hasChanges = tempContentHasChange || sermon.title !== tempTitle;
   const valid = !!tempTitle;
 
   const save = () => {
@@ -46,30 +51,57 @@ export default memo(function SermonEditor({ id }: { id: string }) {
     );
     setTempContentHasChanges(false);
   };
+
+  useEffect(() => {
+    const fn = (e: { preventDefault: () => void; }) => {
+      if (hasChanges) {
+        return "You have unsaved changes, are you sure you would like to leave?";
+        e.preventDefault();
+      }
+    };
+    console.log("adding listener")
+    window.onbeforeunload =  fn;
+
+    return () => void(window.onbeforeunload = null);
+  });
   return (
     <>
+      <Prompt
+        when={hasChanges}
+        message="You have unsaved changes, are you sure you would like to leave?"
+      />
       <SermonEditorTopBar
         sermon={sermon}
         hasChanges={hasChanges}
         onSave={save}
         valid={valid}
+        onView={() => setView(!view)}
+        view={view}
       />
 
       <div className={classes.wrapper}>
-        <SermonTitleEditor
-          value={tempTitle}
-          onChange={setTempTitle}
-          valid={valid}
-        />
+        {view ? (
+          <>
+            <ViewSermon content={tempContent} title={tempTitle} />
+          </>
+        ) : (
+          <>
+            <SermonTitleEditor
+              value={tempTitle}
+              onChange={setTempTitle}
+              valid={valid}
+            />
 
-        <SermonContentEditor
-          value={tempContent}
-          onChange={() => setTempContentHasChanges(true)}
-          onBlur={(v) => {
-            setTempContent(v);
-            console.log(v);
-          }}
-        />
+            <SermonContentEditor
+              value={tempContent}
+              onChange={() => setTempContentHasChanges(true)}
+              onBlur={(v) => {
+                setTempContent(v);
+                console.log(v);
+              }}
+            />
+          </>
+        )}
       </div>
     </>
   );

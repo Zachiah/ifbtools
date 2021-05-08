@@ -10,6 +10,7 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import {MouseEvent, MouseEventHandler, useState,memo} from "react";
 import IconButton from "@material-ui/core/IconButton";
 import TrashIcon from "@material-ui/icons/Delete";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 import CreateIcon from "@material-ui/icons/Create";
 import {deleteSermon} from "state/useSermons";
 
@@ -46,6 +47,10 @@ export default memo(function SermonListItem({ sermon }: { sermon: Sermon }) {
 
             <IconButton component={Link} to={`/sermons/${sermon.id}`}>
                 <CreateIcon />
+            </IconButton>
+
+            <IconButton component={Link} to={`/sermons/${sermon.id}?view=true`}>
+                <VisibilityIcon />
             </IconButton>
 
             <IconButton onClick={openPopover}>

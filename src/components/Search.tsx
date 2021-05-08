@@ -118,9 +118,19 @@ export default function Search({ className }:
     }, [gen]);
 
     const getNext = () => {
-        const x = gen.next();
-        x.value && setResults([...results, x.value]);
-        !x.value && setHasMore(false);
+        let newResults: BibleVerse[] = [];
+        for (let i = 0; i < 10; i++) {
+            const x = gen.next();
+            if (x.value) {
+                newResults = [...newResults,x.value];
+            }
+            else {
+                setHasMore(false);
+                break;
+            }
+        }
+        setResults([...results, ...newResults]);
+        
     }
 
     const scroller = useRef(null);
