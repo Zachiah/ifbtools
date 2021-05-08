@@ -4,32 +4,7 @@ import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import SermonEditorTopBar from "components/SermonEditorTopBar";
 import { useSermon } from "state/useSermons";
 import SermonTitleEditor from "components/SermonTitleEditor";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import {
-  Toolbar,
-  Editor,
-  EditorProvider,
-  useEditorState,
-  ChangeHandler,
-} from "@aeaton/react-prosemirror";
-import plugins from "./plugins";
-import schema from "./schema";
-import toolbar from "./toolbar";
-import "./SermonEditor.scss";
-
-import { createHTMLTransformer } from "@aeaton/prosemirror-transformers";
-import { Store, useStore } from "state/Store";
-import Dialog from "@material-ui/core/Dialog";
-import { BibleVerse } from "util/Bible";
-import { EditorState, Transaction } from "prosemirror-state";
-import SelectChapterDialog from "components/SelectChapterDialog";
-
-const transformer = createHTMLTransformer(schema);
+import SermonContentEditor from "./SermonContentEditor";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,37 +25,27 @@ export default memo(function SermonEditor({ id }: { id: string }) {
   ];
 
   const classes = useStyles();
-  const [newVerseReference,setNewVerseReference] = useState("");
   const [tempTitle, setTempTitle] = useState(sermon.title);
-  const [tempContent, setTempContent] = useState(
-    sermon.content || "<div></div>"
-  );
-  const [open, setOpen] = useState(false);
-  const [verseToInsert, setVerseToInsert] = useState<BibleVerse | null>(null);
-  const [verseInsertCB, setVerseInsertCB] = useState<
-    null | ((v: BibleVerse) => any)
-  >(null);
 
-  const closeDialog = () => setOpen(false);
+  const [tempContent, setTempContent] = useState(sermon.content);
+  const [tempContentHasChange, setTempContentHasChanges] = useState(false);
 
-  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setTempTitle(e.target.value);
-  };
-
-  const hasChanges = !(
-    sermon.title === tempTitle && sermon.content === tempContent
-  );
-
+  const hasChanges = tempContentHasChange || (sermon.title !== tempTitle);
   const valid = !!tempTitle;
 
   const save = () => {
     if (!valid) {
       return;
     }
-    setSermon(new Sermon({ id: id, title: tempTitle, content: tempContent }));
+    setSermon(
+      new Sermon({
+        id: id,
+        title: tempTitle,
+        content: tempContent,
+      })
+    );
+    setTempContentHasChanges(false);
   };
-
-  console.log(open);
   return (
     <>
       <SermonEditorTopBar
@@ -97,23 +62,15 @@ export default memo(function SermonEditor({ id }: { id: string }) {
           valid={valid}
         />
 
-        <div className="SermonEditor-content-editor-wrapper">
-          <EditorProvider
-            doc={transformer.parse(sermon.content || "<div></div>")}
-            plugins={plugins}
-          >
-            <Toolbar toolbar={toolbar} />
-            <Editor />
-            <ChangeHandler
-              handleChange={(v) => {
-                console.log(v);
-                setTempContent(v);
-              }}
-              transformer={transformer}
-            />
-          </EditorProvider>
-        </div>
-      </div> 
+        <SermonContentEditor
+          value={tempContent}
+          onChange={() => setTempContentHasChanges(true)}
+          onBlur={(v) => {
+            setTempContent(v);
+            console.log(v);
+          }}
+        />
+      </div>
     </>
   );
 });
