@@ -16,6 +16,7 @@ import CheckIcon from "@material-ui/icons/Check";
 import { Link } from "react-router-dom";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import PrintIcon from "@material-ui/icons/Print";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,6 +32,7 @@ export default memo(function SermonTopBar({
   valid,
   onSave,
   onView,
+  onPrint,
   view,
 }: {
   sermon: Sermon;
@@ -38,6 +40,7 @@ export default memo(function SermonTopBar({
   onSave: () => void;
   valid: boolean;
   onView: () => void;
+  onPrint: () => void;
   view: boolean;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -56,6 +59,16 @@ export default memo(function SermonTopBar({
           <Typography variant="h6">Editing - {sermon.title}</Typography>
 
           <span className={classes.split}></span>
+
+          {view && (
+            <IconButton
+                color="inherit"
+                disabled={!valid}
+                onClick={onPrint}
+            >
+              <PrintIcon />
+            </IconButton>
+          )}
 
           <IconButton
             color="inherit"

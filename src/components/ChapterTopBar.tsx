@@ -1,5 +1,5 @@
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import AdjacentChapterButton from "components/AdjacentChapterButton";
 import AppBar from "@material-ui/core/AppBar";
@@ -10,6 +10,7 @@ import Search from "components/Search";
 import SelectChapterDialog from "components/SelectChapterDialog";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import { useLocation } from "react-router";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,11 +26,18 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-export default memo(function ChapterTopBar({ chapter }: { chapter: BibleChapter }) {
+export default function ChapterTopBar({ chapter }: { chapter: BibleChapter }) {
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const closeDialog = () => setDialogOpen(false);
+    const closeDialog = () => {setDialogOpen(false);console.log("closingDialog closeDialog")};
     const openDialog = () => setDialogOpen(true);
+
+    const location = useLocation();
+    useEffect(() => {
+        console.log("closing the dialog");
+        setTimeout(closeDialog,0);
+    },[location,chapter]);
+
     const classes = useStyles();
     return (
         <>
@@ -54,4 +62,4 @@ export default memo(function ChapterTopBar({ chapter }: { chapter: BibleChapter 
             <SelectChapterDialog open={dialogOpen} onClose={closeDialog} />
         </>
     );
-})
+}

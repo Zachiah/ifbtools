@@ -1,5 +1,5 @@
 import Sermon from "util/Sermon";
-import { ChangeEvent, useState, memo, useEffect } from "react";
+import React, { ChangeEvent, useState, memo, useEffect, useRef } from "react";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 import SermonEditorTopBar from "components/SermonEditor/SermonEditorTopBar";
 import { useSermon } from "state/useSermons";
@@ -7,6 +7,8 @@ import SermonTitleEditor from "components/SermonTitleEditor";
 import SermonContentEditor from "./SermonContentEditor";
 import ViewSermon from "./ViewSermon";
 import { Prompt } from "react-router";
+import { useSnackbar } from "notistack";
+import html2pdf from "html2pdf.js"; 
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default memo(function SermonEditor({ id }: { id: string }) {
+  const {enqueueSnackbar} = useSnackbar();
   // We have verified in parent that it is a valid id
   const [sermon, setSermon] = useSermon(id) as [
     Sermon,
@@ -50,19 +53,26 @@ export default memo(function SermonEditor({ id }: { id: string }) {
       })
     );
     setTempContentHasChanges(false);
+    enqueueSnackbar("successfully saved", {variant: "success"})
   };
 
+  const theRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLDivElement>;
+
+  const print = () => {
+    html2pdf(theRef.current, {filename: `${tempTitle}.pdf`});
+  }
+
   useEffect(() => {
-    const fn = (e: { preventDefault: () => void; }) => {
+    const fn = (e: { preventDefault: () => void }) => {
       if (hasChanges) {
         return "You have unsaved changes, are you sure you would like to leave?";
         e.preventDefault();
       }
     };
-    console.log("adding listener")
-    window.onbeforeunload =  fn;
+    console.log("adding listener");
+    window.onbeforeunload = fn;
 
-    return () => void(window.onbeforeunload = null);
+    return () => void (window.onbeforeunload = null);
   });
   return (
     <>
@@ -77,9 +87,10 @@ export default memo(function SermonEditor({ id }: { id: string }) {
         valid={valid}
         onView={() => setView(!view)}
         view={view}
+        onPrint={print}
       />
 
-      <div className={classes.wrapper}>
+      <div className={classes.wrapper} ref={theRef}>
         {view ? (
           <>
             <ViewSermon content={tempContent} title={tempTitle} />

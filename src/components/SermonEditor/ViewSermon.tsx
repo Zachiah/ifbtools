@@ -1,7 +1,7 @@
 import Paper from "@material-ui/core/Paper";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Verse from "components/Verse";
-import React from "react";
+import React, { forwardRef } from "react";
 import { memo } from "react";
 import ReactDOM from "react-dom";
 import { BibleBooks, BibleVerse } from "util/Bible";
@@ -11,16 +11,19 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: theme.spacing(2),
     },
+    h2: {
+      padding: 0
+    }
   })
 );
 
-export default memo(function ViewSermon({
+export default memo(forwardRef(function ViewSermon({
   title,
   content,
 }: {
   title: string;
   content: string;
-}) {
+},ref) {
   const splitAndKeep = function (
     str: string,
     separator: string,
@@ -94,7 +97,7 @@ export default memo(function ViewSermon({
           return Array.isArray(verse) ? (
             <>
               <Paper variant="outlined" className={styles.paper}>
-                <h2>
+                <h2 className={styles.h2}>
                   {verse[0].formattedBook} {verse[0]._chapter}
                 </h2>
               </Paper>
@@ -112,7 +115,7 @@ export default memo(function ViewSermon({
   console.log(replacedContent);
 
   return (
-    <>
+    <div ref={ref as any}>
       <h1>{title}</h1>
       {replacedContent.map((replacedContentItem, i) => (
         <React.Fragment key={i}>
@@ -123,6 +126,6 @@ export default memo(function ViewSermon({
           )}
         </React.Fragment>
       ))}
-    </>
+    </div>
   );
-});
+}));

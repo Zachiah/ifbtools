@@ -5,6 +5,14 @@ const lastPages = {
 
     set bible(param: string) {
         localStorage.setItem('last-bible-route',param);
+    },
+
+    get sermons(): string {
+        return localStorage.getItem('last-sermons-route') || "";
+    },
+
+    set sermons(param:string) {
+        localStorage.setItem('last-sermons-route',param);
     }
 }
 

@@ -15,6 +15,7 @@ import Verse from "components/Verse";
 import { useHighlights } from "state/useHighlights";
 import { useParams } from "react-router-dom";
 import partition from "lodash.partition";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,6 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default memo(function Chapter() {
   const classes = useStyles();
+  const {enqueueSnackbar} = useSnackbar();
   const { book, chapter: chapterNumber } = useParams<{
     book: string;
     chapter: string;
@@ -142,10 +144,12 @@ export default memo(function Chapter() {
     } else if (textSelection) {
       document.execCommand("copy");
     }
+    enqueueSnackbar("Copied!", {variant:"success"});
   };
 
   const copyShortCode = () => {
-    copyText(`[passage book="${chapter._book}" chapter="${chapterNumber}" verses="${formatNumberRange(selectedVersesArray.map(i => i._verse))}"]`);
+    copyText(`[passage book="${chapter._book}" chapter="${chapterNumber}" verse="${formatNumberRange(selectedVersesArray.map(i => i._verse))}"]`);
+    enqueueSnackbar("Copied short code", {variant: "success"});
   };
 
   const selectedVersesArray = Object.entries(selectedVerses)
@@ -253,6 +257,7 @@ export default memo(function Chapter() {
                 active={selectedVerses[verse._verse]}
                 onClick={() => toggleVerse(verse)}
                 highlightedText={() => highlightedText(verse)}
+                disableLink
               />
             ))}
           </Container>

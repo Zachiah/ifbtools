@@ -100,11 +100,11 @@ export default memo(function HighlightVersesBar({ open, onClose, onHighlight, on
         (open) ?
             <AppBar position="fixed" color="inherit">
                 <Toolbar variant="dense">
-                    <IconButton onClick={onCopy}>
+                    <IconButton onClick={onCopy} title="Copy Selection to Clipboard">
                         <CopyIcon />
                     </IconButton>
                     {selectionTypeVerse && (
-                        <IconButton onClick={onCopyShortCode}>
+                        <IconButton onClick={onCopyShortCode} title="Copy Shortcode to Paste in Sermon">
                             <LinkIcon />
                         </IconButton>
                     )

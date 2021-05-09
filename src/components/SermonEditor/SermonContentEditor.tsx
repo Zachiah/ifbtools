@@ -27,7 +27,7 @@ export default memo(function SermonContentEditor({
           "insertdatetime media table paste code help wordcount searchreplace",
         ],
         toolbar:
-          "undo redo searchreplace | formatselect | " +
+          "undo redo searchreplace fullscreen | formatselect | " +
           "bold italic backcolor | alignleft aligncenter " +
           "alignright alignjustify | bullist numlist outdent indent | " +
           "removeformat | help",
